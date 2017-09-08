@@ -43,11 +43,17 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
     [CNVConnectivityManager sharedManager].delegate = self;
     [[CNVConnectivityManager sharedManager] startBrowsing];
     
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
-    [self.navigationItem setRightBarButtonItem:barButtonItem animated:true]; //navigationController.navigationItem.rightBarButtonItem = barButtonItem;
     
-    [activityIndicator startAnimating];
+//    
+//    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+//    activityIndicator.center = self.navigationItem.titleView.center;
+//    //UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
+//    
+//    [self.navigationItem.titleView addSubview:activityIndicator];
+//    
+//    //[self.navigationItem setRightBarButtonItem:barButtonItem animated:true]; //navigationController.navigationItem.rightBarButtonItem = barButtonItem;
+//    
+//    [activityIndicator startAnimating];
 
 }
 
@@ -106,6 +112,9 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
     
     [self.navigationController popViewControllerAnimated:true];
 }
+
+
+
 
 /*
 // Override to support conditional editing of the table view.

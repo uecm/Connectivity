@@ -110,6 +110,7 @@ static NSString * const kServiceType = @"CNV-service";
     for (MCPeerID *peer in mutableDataSource) {
         if ([peerID isEqual:peer]) {
             [mutableDataSource removeObject:peer];
+            self.peers = mutableDataSource.copy;
             break;
         }
     }
