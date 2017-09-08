@@ -82,6 +82,7 @@ static NSString * const kServiceType = @"CNV-service";
 
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary<NSString *,NSString *> *)info {
     [self addPeer:peerID];
+    
     if ([self.delegate respondsToSelector:@selector(browserFoundPeer:)]) {
         [self.delegate browserFoundPeer:peerID];
     }
@@ -117,6 +118,13 @@ static NSString * const kServiceType = @"CNV-service";
 }
 
 
+- (void)invitePeer:(MCPeerID *)peer {
+    self.session = [[MCSession alloc] initWithPeer:self.localPeerID];
+    [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:20];
+}
+
+
+
 #pragma mark - Advertising
 
 
@@ -148,5 +156,60 @@ static NSString * const kServiceType = @"CNV-service";
         [self.delegate advertiserFailedStart];
     }
 }
+
+
+
+#pragma mark - Session
+
+
+// Remote peer changed state.
+- (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
+    
+}
+
+// Received data from remote peer.
+- (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
+    
+}
+
+// Received a byte stream from remote peer.
+- (void)    session:(MCSession *)session
+   didReceiveStream:(NSInputStream *)stream
+           withName:(NSString *)streamName
+           fromPeer:(MCPeerID *)peerID {
+    
+}
+
+// Start receiving a resource from remote peer.
+- (void)                    session:(MCSession *)session
+  didStartReceivingResourceWithName:(NSString *)resourceName
+                           fromPeer:(MCPeerID *)peerID
+                       withProgress:(NSProgress *)progress {
+    
+}
+
+// Finished receiving a resource from remote peer and saved the content
+// in a temporary location - the app is responsible for moving the file
+// to a permanent location within its sandbox.
+- (void)                    session:(MCSession *)session
+ didFinishReceivingResourceWithName:(NSString *)resourceName
+                           fromPeer:(MCPeerID *)peerID
+                              atURL:(NSURL *)localURL
+                          withError:(nullable NSError *)error {
+    
+}
+
+// Made first contact with peer and have identity information about the
+// remote peer (certificate may be nil).
+- (void)        session:(MCSession *)session
+  didReceiveCertificate:(nullable NSArray *)certificate
+               fromPeer:(MCPeerID *)peerID
+     certificateHandler:(void (^)(BOOL accept))certificateHandler {
+    
+}
+
+
+
+
 
 @end

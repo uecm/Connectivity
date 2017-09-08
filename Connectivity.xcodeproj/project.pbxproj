@@ -40,7 +40,7 @@
 		CEF961B51F62A075004105F8 /* CNVHostListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVHostListTableViewController.h; sourceTree = "<group>"; };
 		CEF961B61F62A075004105F8 /* CNVHostListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVHostListTableViewController.m; sourceTree = "<group>"; };
 		CEF961B81F62D480004105F8 /* CNVConnectivityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVConnectivityManager.h; sourceTree = "<group>"; };
-		CEF961B91F62D480004105F8 /* CNVConnectivityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVConnectivityManager.m; sourceTree = "<group>"; };
+		CEF961B91F62D480004105F8 /* CNVConnectivityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVConnectivityManager.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		D45CD7BDA431533DF55AEE65 /* Pods-Connectivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Connectivity.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Connectivity/Pods-Connectivity.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -420,6 +420,7 @@
 				CEF961AB1F6296A9004105F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
