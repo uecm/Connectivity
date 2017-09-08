@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  CNVNetworkSettingsTableViewController.h
 //  Connectivity
 //
 //  Created by user on 9/8/17.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface CNVNetworkSettingsTableViewController : UITableViewController
 
 @end
-

@@ -7,25 +7,41 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		63338DFB8484BD796972EDF2 /* libPods-Connectivity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7889CAA935DD026E18657A1F /* libPods-Connectivity.a */; };
 		CEF961971F6296A7004105F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961961F6296A7004105F8 /* main.m */; };
 		CEF9619A1F6296A8004105F8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961991F6296A8004105F8 /* AppDelegate.m */; };
-		CEF9619D1F6296A8004105F8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF9619C1F6296A8004105F8 /* ViewController.m */; };
 		CEF961A01F6296A8004105F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEF9619E1F6296A8004105F8 /* Main.storyboard */; };
 		CEF961A21F6296A8004105F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEF961A11F6296A8004105F8 /* Assets.xcassets */; };
 		CEF961A51F6296A9004105F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEF961A31F6296A9004105F8 /* LaunchScreen.storyboard */; };
+		CEF961AE1F629F83004105F8 /* CNVMainTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961AD1F629F83004105F8 /* CNVMainTableViewController.m */; };
+		CEF961B11F629FBB004105F8 /* CNVNetworkSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961B01F629FBB004105F8 /* CNVNetworkSettingsTableViewController.m */; };
+		CEF961B41F62A04F004105F8 /* CNVHostSetupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961B31F62A04F004105F8 /* CNVHostSetupViewController.m */; };
+		CEF961B71F62A075004105F8 /* CNVHostListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961B61F62A075004105F8 /* CNVHostListTableViewController.m */; };
+		CEF961BA1F62D480004105F8 /* CNVConnectivityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF961B91F62D480004105F8 /* CNVConnectivityManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01A6BEAEC28EC63CDBE21383 /* Pods-Connectivity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Connectivity.release.xcconfig"; path = "Pods/Target Support Files/Pods-Connectivity/Pods-Connectivity.release.xcconfig"; sourceTree = "<group>"; };
+		7889CAA935DD026E18657A1F /* libPods-Connectivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Connectivity.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF961921F6296A7004105F8 /* Connectivity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Connectivity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF961961F6296A7004105F8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CEF961981F6296A8004105F8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		CEF961991F6296A8004105F8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		CEF9619B1F6296A8004105F8 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		CEF9619C1F6296A8004105F8 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		CEF9619F1F6296A8004105F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CEF961A11F6296A8004105F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEF961A41F6296A9004105F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEF961A61F6296A9004105F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEF961AC1F629F83004105F8 /* CNVMainTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVMainTableViewController.h; sourceTree = "<group>"; };
+		CEF961AD1F629F83004105F8 /* CNVMainTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVMainTableViewController.m; sourceTree = "<group>"; };
+		CEF961AF1F629FBB004105F8 /* CNVNetworkSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVNetworkSettingsTableViewController.h; sourceTree = "<group>"; };
+		CEF961B01F629FBB004105F8 /* CNVNetworkSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVNetworkSettingsTableViewController.m; sourceTree = "<group>"; };
+		CEF961B21F62A04F004105F8 /* CNVHostSetupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVHostSetupViewController.h; sourceTree = "<group>"; };
+		CEF961B31F62A04F004105F8 /* CNVHostSetupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVHostSetupViewController.m; sourceTree = "<group>"; };
+		CEF961B51F62A075004105F8 /* CNVHostListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVHostListTableViewController.h; sourceTree = "<group>"; };
+		CEF961B61F62A075004105F8 /* CNVHostListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVHostListTableViewController.m; sourceTree = "<group>"; };
+		CEF961B81F62D480004105F8 /* CNVConnectivityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVConnectivityManager.h; sourceTree = "<group>"; };
+		CEF961B91F62D480004105F8 /* CNVConnectivityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVConnectivityManager.m; sourceTree = "<group>"; };
+		D45CD7BDA431533DF55AEE65 /* Pods-Connectivity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Connectivity.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Connectivity/Pods-Connectivity.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +49,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63338DFB8484BD796972EDF2 /* libPods-Connectivity.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2352BB2A0D90FC4D68BB28E7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D45CD7BDA431533DF55AEE65 /* Pods-Connectivity.debug.xcconfig */,
+				01A6BEAEC28EC63CDBE21383 /* Pods-Connectivity.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A03F621F2E4D50B8E1DE662C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7889CAA935DD026E18657A1F /* libPods-Connectivity.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CEF961891F6296A7004105F8 = {
 			isa = PBXGroup;
 			children = (
 				CEF961941F6296A7004105F8 /* Connectivity */,
 				CEF961931F6296A7004105F8 /* Products */,
+				2352BB2A0D90FC4D68BB28E7 /* Pods */,
+				A03F621F2E4D50B8E1DE662C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,13 +96,21 @@
 			children = (
 				CEF961981F6296A8004105F8 /* AppDelegate.h */,
 				CEF961991F6296A8004105F8 /* AppDelegate.m */,
-				CEF9619B1F6296A8004105F8 /* ViewController.h */,
-				CEF9619C1F6296A8004105F8 /* ViewController.m */,
+				CEF961AC1F629F83004105F8 /* CNVMainTableViewController.h */,
+				CEF961AD1F629F83004105F8 /* CNVMainTableViewController.m */,
+				CEF961AF1F629FBB004105F8 /* CNVNetworkSettingsTableViewController.h */,
+				CEF961B01F629FBB004105F8 /* CNVNetworkSettingsTableViewController.m */,
+				CEF961B21F62A04F004105F8 /* CNVHostSetupViewController.h */,
+				CEF961B31F62A04F004105F8 /* CNVHostSetupViewController.m */,
+				CEF961B51F62A075004105F8 /* CNVHostListTableViewController.h */,
+				CEF961B61F62A075004105F8 /* CNVHostListTableViewController.m */,
 				CEF9619E1F6296A8004105F8 /* Main.storyboard */,
 				CEF961A11F6296A8004105F8 /* Assets.xcassets */,
 				CEF961A31F6296A9004105F8 /* LaunchScreen.storyboard */,
 				CEF961A61F6296A9004105F8 /* Info.plist */,
 				CEF961951F6296A7004105F8 /* Supporting Files */,
+				CEF961B81F62D480004105F8 /* CNVConnectivityManager.h */,
+				CEF961B91F62D480004105F8 /* CNVConnectivityManager.m */,
 			);
 			path = Connectivity;
 			sourceTree = "<group>";
@@ -86,9 +130,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEF961A91F6296A9004105F8 /* Build configuration list for PBXNativeTarget "Connectivity" */;
 			buildPhases = (
+				FD8448FF70F9004F4D547055 /* [CP] Check Pods Manifest.lock */,
 				CEF9618E1F6296A7004105F8 /* Sources */,
 				CEF9618F1F6296A7004105F8 /* Frameworks */,
 				CEF961901F6296A7004105F8 /* Resources */,
+				E9FF8BA3D9AC3D4B71CE6C6B /* [CP] Embed Pods Frameworks */,
+				EF06D444A46C18766EF0EF16 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -110,6 +157,7 @@
 				TargetAttributes = {
 					CEF961911F6296A7004105F8 = {
 						CreatedOnToolsVersion = 8.3.3;
+						DevelopmentTeam = DD484H6UF4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -145,14 +193,69 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		E9FF8BA3D9AC3D4B71CE6C6B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Connectivity/Pods-Connectivity-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EF06D444A46C18766EF0EF16 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Connectivity/Pods-Connectivity-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FD8448FF70F9004F4D547055 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Connectivity-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CEF9618E1F6296A7004105F8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEF9619D1F6296A8004105F8 /* ViewController.m in Sources */,
 				CEF9619A1F6296A8004105F8 /* AppDelegate.m in Sources */,
+				CEF961AE1F629F83004105F8 /* CNVMainTableViewController.m in Sources */,
+				CEF961B71F62A075004105F8 /* CNVHostListTableViewController.m in Sources */,
+				CEF961BA1F62D480004105F8 /* CNVConnectivityManager.m in Sources */,
 				CEF961971F6296A7004105F8 /* main.m in Sources */,
+				CEF961B41F62A04F004105F8 /* CNVHostSetupViewController.m in Sources */,
+				CEF961B11F629FBB004105F8 /* CNVNetworkSettingsTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,8 +375,10 @@
 		};
 		CEF961AA1F6296A9004105F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D45CD7BDA431533DF55AEE65 /* Pods-Connectivity.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DD484H6UF4;
 				INFOPLIST_FILE = Connectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -284,8 +389,10 @@
 		};
 		CEF961AB1F6296A9004105F8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01A6BEAEC28EC63CDBE21383 /* Pods-Connectivity.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DD484H6UF4;
 				INFOPLIST_FILE = Connectivity/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
