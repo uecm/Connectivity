@@ -18,6 +18,7 @@ static NSString * const kServiceType = @"CNV-service";
     if (self) {
         [self initializeLocalPeerID];
         self.peers = @[];
+        self.acceptedPeers = @[].mutableCopy;
     }
     return self;
 }
@@ -146,7 +147,10 @@ static NSString * const kServiceType = @"CNV-service";
                                      withContext:(NSData *)context
                                invitationHandler:(void (^)(BOOL, MCSession * _Nullable))invitationHandler {
     
-    if ([self.delegate respondsToSelector:@selector(advertiserDidReceiveInvintationFromPeer:invintationHandler:)]) {
+    if ([_acceptedPeers containsObject:peerID]) {
+        invitationHandler(false, nil);
+    }
+    else if ([self.delegate respondsToSelector:@selector(advertiserDidReceiveInvintationFromPeer:invintationHandler:)]) {
         [self.delegate advertiserDidReceiveInvintationFromPeer:peerID invintationHandler:invitationHandler];
     }
 }
@@ -161,6 +165,20 @@ static NSString * const kServiceType = @"CNV-service";
 
 
 #pragma mark - Session
+
+
+- (void)invitePeerToSession:(MCPeerID *)peer {
+    
+    BOOL isMe = (uint32_t)self.localPeerID.hash == (uint32_t)peer.hash;
+    if (isMe) {
+        return;
+    }
+    
+    if (!_session) {
+        self.session = [[MCSession alloc] initWithPeer:self.localPeerID];
+    }
+    [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:15];
+}
 
 
 // Remote peer changed state.

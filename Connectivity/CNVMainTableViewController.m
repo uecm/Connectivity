@@ -117,6 +117,63 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
 }
 
 
+- (void)advertiserDidReceiveInvintationFromPeer:(MCPeerID *)peerID
+                             invintationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
+    
+    CNVConnectivityManager *connectivityManager = [CNVConnectivityManager sharedManager];
+    [self showInvintationHandlerActionSheetFromPeer:peerID withCompletion:^(BOOL accepted) {
+        if (accepted) {
+            [connectivityManager.acceptedPeers addObject:peerID];
+            [self updateCurrentConnectionCell];
+        }
+        invitationHandler(accepted, connectivityManager.session);
+    }];
+}
+
+
+
+#pragma mark - Buttons
+
+- (IBAction)connectPressed:(id)sender {
+    
+    [[CNVConnectivityManager sharedManager] invitePeerToSession:self.selectedPeer];
+}
+
+
+
+
+#pragma mark - Misc
+
+
+- (void)updateCurrentConnectionCell {
+    UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kCurrentConnectionCellIdentifier]];
+    if (!currentConnectionCell) {
+        return;
+    }
+    
+    MCPeerID *currentPeer = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject;
+    NSString *currerntConnectionText = currentPeer ? currentPeer.displayName : @"No connection";
+    currentConnectionCell.detailTextLabel.text = currerntConnectionText;
+}
+
+
+- (void)showInvintationHandlerActionSheetFromPeer:(MCPeerID *)peer withCompletion:(void(^)(BOOL accepted))completion {
+    NSString *message = [NSString stringWithFormat:@"%@ wants to join your session", peer.displayName];
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Accept Request?"
+                                                                         message:message
+                                                                  preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        completion(true);
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Decline" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        completion(false);
+    }]];
+    
+    [self presentViewController:actionSheet animated:true completion:nil];
+}
+
+
 
 #pragma mark - Navigation
 

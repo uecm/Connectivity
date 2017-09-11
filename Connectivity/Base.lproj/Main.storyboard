@@ -119,6 +119,9 @@
                                                     <rect key="frame" x="156" y="6" width="62" height="30"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="Connect"/>
+                                                    <connections>
+                                                        <action selector="connectPressed:" destination="lz5-ix-vMr" eventType="touchUpInside" id="EwO-EL-qTy"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>

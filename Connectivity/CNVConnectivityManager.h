@@ -29,7 +29,9 @@
 @property (strong, nonatomic) MCNearbyServiceBrowser *browser;
 
 @property (weak, nonatomic) id<CNVConnectivityDelegate> delegate;
+
 @property (strong, nonatomic) NSArray<MCPeerID *> *peers;
+@property (strong, nonatomic) NSMutableArray<MCPeerID *> *acceptedPeers;
 
 @property (assign, nonatomic, getter=isAdvertising) BOOL advertising;
 
@@ -43,5 +45,8 @@
 
 - (void)startAdvertising;
 - (void)endAdvertising;
+
+- (void)invitePeerToSession:(MCPeerID *)peer;
+
 
 @end
