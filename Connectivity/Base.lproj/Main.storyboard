@@ -95,7 +95,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Join" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BTQ-w3-fNs">
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Search for others" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BTQ-w3-fNs">
                                                     <rect key="frame" x="15" y="0.0" width="325" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -107,6 +107,25 @@
                                         <connections>
                                             <segue destination="6SK-rc-Jx3" kind="show" identifier="hostListSegue" id="5oD-4b-khy"/>
                                         </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="connectCell" id="wGN-FD-kcb">
+                                        <rect key="frame" x="0.0" y="288" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wGN-FD-kcb" id="B8v-aA-lUh">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9LU-Ti-bbl">
+                                                    <rect key="frame" x="156" y="6" width="62" height="30"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <state key="normal" title="Connect"/>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="9LU-Ti-bbl" firstAttribute="centerX" secondItem="B8v-aA-lUh" secondAttribute="centerX" id="Adm-3s-ggZ"/>
+                                                <constraint firstItem="9LU-Ti-bbl" firstAttribute="centerY" secondItem="B8v-aA-lUh" secondAttribute="centerY" id="ksC-AR-b3i"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -122,10 +141,10 @@
             </objects>
             <point key="canvasLocation" x="180" y="127.28635682158921"/>
         </scene>
-        <!--Host Setup View Controller-->
+        <!--Host-->
         <scene sceneID="m49-Bd-283">
             <objects>
-                <viewController id="4XM-BR-n9z" customClass="CNVHostSetupViewController" sceneMemberID="viewController">
+                <viewController title="Host" id="4XM-BR-n9z" customClass="CNVHostSetupViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="3i2-YG-0Ch"/>
                         <viewControllerLayoutGuide type="bottom" id="Nhx-M0-3nC"/>
@@ -135,11 +154,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gIR-qb-wce">
-                                <rect key="frame" x="112" y="318" width="150" height="30"/>
+                                <rect key="frame" x="107" y="313" width="160" height="40"/>
                                 <color key="backgroundColor" red="0.23016887903213501" green="0.47939050197601318" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="CWR-BL-Vjb"/>
-                                    <constraint firstAttribute="width" constant="150" id="dAt-SZ-4qq"/>
+                                    <constraint firstAttribute="height" constant="40" id="CWR-BL-Vjb"/>
+                                    <constraint firstAttribute="width" constant="160" id="dAt-SZ-4qq"/>
                                 </constraints>
                                 <state key="normal" title="Start advertising">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -191,31 +210,17 @@
             </objects>
             <point key="canvasLocation" x="1215" y="-552"/>
         </scene>
-        <!--Looking for Peers...-->
+        <!--Searching-->
         <scene sceneID="ZSK-Pu-8cI">
             <objects>
-                <tableViewController title="Looking for Peers..." id="6SK-rc-Jx3" customClass="CNVHostListTableViewController" sceneMemberID="viewController">
+                <tableViewController title="Searching" id="6SK-rc-Jx3" customClass="CNVHostListTableViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="6g8-hD-scf">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <view key="tableHeaderView" contentMode="scaleToFill" id="Spt-VT-78e">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="v6d-QR-nis">
-                                    <rect key="frame" x="177" y="12" width="20" height="20"/>
-                                </activityIndicatorView>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstItem="v6d-QR-nis" firstAttribute="centerY" secondItem="Spt-VT-78e" secondAttribute="centerY" id="WNS-U4-VX1"/>
-                                <constraint firstItem="v6d-QR-nis" firstAttribute="centerX" secondItem="Spt-VT-78e" secondAttribute="centerX" id="bCW-Lv-aTa"/>
-                            </constraints>
-                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="peerCell" textLabel="DVx-mi-6hg" style="IBUITableViewCellStyleDefault" id="B9Y-VO-ycz">
-                                <rect key="frame" x="0.0" y="72" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B9Y-VO-ycz" id="DiD-hl-jUO">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>

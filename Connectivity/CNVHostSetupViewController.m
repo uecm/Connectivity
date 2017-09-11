@@ -14,7 +14,6 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *startAdvertisingButton;
 
-
 @end
 
 
@@ -32,11 +31,11 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
     self.startAdvertisingButton.layer.cornerRadius = 8.f;
     self.startAdvertisingButton.clipsToBounds = true;
     
-    if ([CNVConnectivityManager sharedManager].advertiser) {
+    if ([CNVConnectivityManager sharedManager].isAdvertising) {
         [self setButtonStateAdvertising];
     }
     else {
-        self.startAdvertisingButton.backgroundColor = [UIColor pastelBlueColor];
+        [self setButtonStateDefault];
     }
 }
 
@@ -48,7 +47,14 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
 
 - (IBAction)startAdvertisingButtonPressed:(id)sender {
     [self setButtonStateAdvertising];
-    [[CNVConnectivityManager sharedManager] startAdvertising];
+    
+    if ([CNVConnectivityManager sharedManager].isAdvertising == false) {
+        [[CNVConnectivityManager sharedManager] startAdvertising];
+        [self setButtonStateAdvertising];
+    }
+    else {
+        [self showEndAdvertisingActionSheet];
+    }
 }
 
 -(void)advertiserDidReceiveInvintationFromPeer:(MCPeerID *)peerID invintationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
@@ -65,7 +71,6 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
 
 - (void)setButtonStateAdvertising {
     UIButton *button = self.startAdvertisingButton;
-    button.enabled = false;
     
     button.backgroundColor = [UIColor seafoamColor];
     [button setTitle:@"Advertising" forState:UIControlStateNormal];
@@ -73,10 +78,36 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
 
 - (void)setButtonStateFailed {
     UIButton *button = self.startAdvertisingButton;
-    button.enabled = true;
     
     button.backgroundColor = [UIColor tomatoColor];
     [button setTitle:@"Failed" forState:UIControlStateNormal];
+}
+
+- (void)setButtonStateDefault {
+    UIButton *button = self.startAdvertisingButton;
+    
+    button.backgroundColor = [UIColor pastelBlueColor];
+    [button setTitle:@"Start advertising" forState:UIControlStateNormal];
+}
+
+- (void)showEndAdvertisingActionSheet {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                             message:@"Are you sure you want to stop advertising?"
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Stop"
+                                                        style:UIAlertActionStyleDestructive
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [[CNVConnectivityManager sharedManager] endAdvertising];
+                                                          [self setButtonStateDefault];
+                                                          [alertController dismissViewControllerAnimated:true completion:nil];
+                                                      }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [alertController dismissViewControllerAnimated:true completion:nil];
+                                                      }]];
+    
+    [self presentViewController:alertController animated:true completion:nil];
 }
 
 @end

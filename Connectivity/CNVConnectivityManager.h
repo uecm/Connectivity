@@ -31,6 +31,8 @@
 @property (weak, nonatomic) id<CNVConnectivityDelegate> delegate;
 @property (strong, nonatomic) NSArray<MCPeerID *> *peers;
 
+@property (assign, nonatomic, getter=isAdvertising) BOOL advertising;
+
 - (instancetype)init UNAVAILABLE_ATTRIBUTE;
 + (instancetype)sharedManager;
 

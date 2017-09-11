@@ -9,19 +9,20 @@
 #import "CNVMainTableViewController.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "CNVHostListTableViewController.h"
+#import "CNVConnectivityManager.h"
 
-
-@interface CNVMainTableViewController () <CNVHostListDelegate>
+@interface CNVMainTableViewController () <CNVHostListDelegate, CNVConnectivityDelegate>
 
 @property (strong, nonatomic) MCPeerID *selectedPeer;
 @property (strong, nonatomic) NSArray *tableMap;
 
 @end
 
-static NSString * const kNetworkCellIdentifier = @"networkSettingsCell";
+static NSString * const kNetworkCellIdentifier           = @"networkSettingsCell";
 static NSString * const kCurrentConnectionCellIdentifier = @"currentConnectionCell";
-static NSString * const kHostConnectionCellIdentifier = @"hostConnectionCell";
-static NSString * const kJoinConnectionCellIdentifier = @"joinConnectionCell";
+static NSString * const kHostConnectionCellIdentifier    = @"hostConnectionCell";
+static NSString * const kJoinConnectionCellIdentifier    = @"joinConnectionCell";
+static NSString * const kConnectCellIdentifier           = @"connectCell";
 
 
 @implementation CNVMainTableViewController
@@ -39,6 +40,12 @@ static NSString * const kJoinConnectionCellIdentifier = @"joinConnectionCell";
     [self initializeTableView];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [CNVConnectivityManager sharedManager].delegate = self;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -50,7 +57,8 @@ static NSString * const kJoinConnectionCellIdentifier = @"joinConnectionCell";
     
     NSDictionary *connectionSection = @{ kCurrentConnectionCellIdentifier : [NSIndexPath indexPathForRow:0 inSection:1],
                                          kHostConnectionCellIdentifier    : [NSIndexPath indexPathForRow:1 inSection:1],
-                                         kJoinConnectionCellIdentifier    : [NSIndexPath indexPathForRow:2 inSection:1]
+                                         kJoinConnectionCellIdentifier    : [NSIndexPath indexPathForRow:2 inSection:1],
+                                         kConnectCellIdentifier           : [NSIndexPath indexPathForRow:3 inSection:1],
                                         };
     self.tableMap = @[settingsSection, connectionSection];
     
@@ -67,60 +75,47 @@ static NSString * const kJoinConnectionCellIdentifier = @"joinConnectionCell";
     if (!self.tableMap) {
         return 0;
     }
-    
     return ((NSDictionary *)[self.tableMap objectAtIndex:section]).count;
 }
 
 
--(void)hostList:(CNVHostListTableViewController *)hostList didSelectPeerToConnect:(MCPeerID *)peerID {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    CGFloat height = tableView.rowHeight;
+    
+    NSIndexPath *connectIndexPath = self.tableMap[1][kConnectCellIdentifier];
+    if ([indexPath isEqual:connectIndexPath] && self.selectedPeer == nil) {
+        height = 0;
+    }
+    
+    return height;
+}
+
+
+
+#pragma mark - Delegates
+
+- (void)hostList:(CNVHostListTableViewController *)hostList didSelectPeerToConnect:(MCPeerID *)peerID {
     self.selectedPeer = peerID;
     
     UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kCurrentConnectionCellIdentifier]];
     currentConnectionCell.detailTextLabel.text = peerID ? peerID.displayName : @"No Connection";
-}
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier" forIndexPath:indexPath];
-    // Configure the cell...
     
-    return cell;
+    [self.tableView reloadData];
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+- (void)browserLostPeer:(MCPeerID *)peerID {
+    if ((uint32_t)peerID.hash == (uint32_t)self.selectedPeer.hash) {
+        self.selectedPeer = nil;
+        
+        UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kCurrentConnectionCellIdentifier]];
+        currentConnectionCell.detailTextLabel.text = @"No Connection";
+        
+        [self.tableView reloadData];
+    }
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 
 #pragma mark - Navigation

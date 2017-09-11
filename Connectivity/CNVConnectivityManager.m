@@ -133,11 +133,12 @@ static NSString * const kServiceType = @"CNV-service";
         [self initializeNearbyServiceAdvertizer];
     }
     [_advertiser startAdvertisingPeer];
+    _advertising = true;
 }
 
 - (void)endAdvertising {
-    _advertiser ? [_advertiser stopAdvertisingPeer] : 0x0;
-    _advertiser = nil;
+    self.isAdvertising ? [_advertiser stopAdvertisingPeer] : 0x0;
+    _advertising = false;
 }
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser

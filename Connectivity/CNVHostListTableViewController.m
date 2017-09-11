@@ -8,6 +8,7 @@
 
 #import "CNVHostListTableViewController.h"
 #import "CNVConnectivityManager.h"
+#import <Colours.h>
 
 @interface CNVHostListTableViewController () <CNVConnectivityDelegate>
 
@@ -26,9 +27,10 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(donePressed:)];
+    self.navigationItem.rightBarButtonItem = doneButton;
     
+    [self addActivityIndicatorToTitle];
     [self startBrowsing];
 }
 
@@ -105,15 +107,42 @@ static NSString * const kPeerCellIdentifier = @"peerCell";
     cell.accessoryType = UITableViewCellAccessoryCheckmark;
     
     self.selectedPeer = [CNVConnectivityManager sharedManager].peers[indexPath.row];
-    
-    if ([self.delegate respondsToSelector:@selector(hostList:didSelectPeerToConnect:)]) {
-        [self.delegate hostList:self didSelectPeerToConnect:self.selectedPeer];
-    }
-    
-    [self.navigationController popViewControllerAnimated:true];
 }
 
 
+- (void)addActivityIndicatorToTitle {
+    UIView *titleView = [[UIView alloc] init];
+    UILabel *titleLabel = [[UILabel alloc] init];
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    
+    titleLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+    titleLabel.text = self.navigationItem.title;
+    [titleLabel sizeToFit];
+    
+    activityIndicator.color = [UIColor coolGrayColor];
+    
+    float width = CGRectGetWidth(titleLabel.frame) + CGRectGetWidth(activityIndicator.frame) + 2; // 2 - indent between activity indicator and title
+    float height = CGRectGetHeight(titleLabel.frame);
+    
+    titleView.frame = CGRectMake(0, 0, width, height);
+    [titleView addSubview:activityIndicator];
+    [titleView addSubview:titleLabel];
+    
+    activityIndicator.center = CGPointMake(CGRectGetMidX(activityIndicator.frame), height/2);
+    titleLabel.center = CGPointMake(width - CGRectGetMidX(titleLabel.frame) + 2, height/2);
+    
+    [activityIndicator startAnimating];
+    self.navigationItem.titleView = titleView;
+}
+
+
+
+- (void)donePressed:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(hostList:didSelectPeerToConnect:)]) {
+        [self.delegate hostList:self didSelectPeerToConnect:self.selectedPeer];
+    }
+    [self.navigationController popViewControllerAnimated:true];
+}
 
 
 /*
