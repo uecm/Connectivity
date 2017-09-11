@@ -98,8 +98,8 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
 - (void)hostList:(CNVHostListTableViewController *)hostList didSelectPeerToConnect:(MCPeerID *)peerID {
     self.selectedPeer = peerID;
     
-    UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kCurrentConnectionCellIdentifier]];
-    currentConnectionCell.detailTextLabel.text = peerID ? peerID.displayName : @"No Connection";
+    UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kJoinConnectionCellIdentifier]];
+    currentConnectionCell.textLabel.text = peerID ? peerID.displayName : @"Search for others";
     
     [self.tableView reloadData];
 }
@@ -109,8 +109,8 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
     if ((uint32_t)peerID.hash == (uint32_t)self.selectedPeer.hash) {
         self.selectedPeer = nil;
         
-        UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kCurrentConnectionCellIdentifier]];
-        currentConnectionCell.detailTextLabel.text = @"No Connection";
+        UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kJoinConnectionCellIdentifier]];
+        currentConnectionCell.textLabel.text = @"Search for others";
         
         [self.tableView reloadData];
     }
