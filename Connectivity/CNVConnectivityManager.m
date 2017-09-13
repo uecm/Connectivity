@@ -8,9 +8,11 @@
 
 #import "CNVConnectivityManager.h"
 
-static NSString * const kServiceType = @"CNV-service";
+static NSString * const kServiceType = @"CNV-game-srvc";
+
 
 @implementation CNVConnectivityManager
+@synthesize session = _session;
 
 
 - (instancetype)initPrivate {
@@ -19,6 +21,7 @@ static NSString * const kServiceType = @"CNV-service";
         [self initializeLocalPeerID];
         self.peers = @[];
         self.acceptedPeers = @[].mutableCopy;
+        self.broadcastingDeviceName = [UIDevice currentDevice].name;
     }
     return self;
 }
@@ -34,28 +37,45 @@ static NSString * const kServiceType = @"CNV-service";
 }
 
 
+- (void)setLocalPeerIDWithName:(NSString *)name {
+    MCPeerID *newPeer = [[MCPeerID alloc] initWithDisplayName:name];
+    self.localPeerID = newPeer;
+}
+
+
 #pragma mark - Initializers
 
 - (void)initializeLocalPeerID {
-    NSString *UUIDString = [[UIDevice currentDevice] identifierForVendor].UUIDString;
-    NSString *deviceIdentifierSubstring = [UUIDString substringWithRange:NSMakeRange(0, 2)];
-    NSString *deviceName = [UIDevice currentDevice].name;
     
-    NSArray<NSString *> *objs = @[deviceName, deviceIdentifierSubstring];
-    NSString *displayName = [objs componentsJoinedByString:@"-"];
+    NSString *displayName = [[NSUserDefaults standardUserDefaults] objectForKey:@"userName"];
+    
+    if (!displayName) {
+        NSString *UUIDString = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+        NSString *deviceIdentifierSubstring = [UUIDString substringWithRange:NSMakeRange(0, 2)];
+        NSString *deviceName = [UIDevice currentDevice].name;
+        
+        NSArray<NSString *> *objs = @[deviceName, deviceIdentifierSubstring];
+        displayName = [objs componentsJoinedByString:@"-"];
+    }
     
     self.localPeerID = [[MCPeerID alloc] initWithDisplayName:displayName];
 }
 
-- (void)initializeNearbyServiceAdvertizer {
-    if (_advertiser) {
+
+- (void)initializeAdvertizerAssistant {
+    if (_advertiserAssistant) {
         return;
     }
-    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.localPeerID
-                                                        discoveryInfo:nil
-                                                          serviceType:kServiceType];
-    self.advertiser.delegate = self;
+    NSDictionary *discoveryInfo = @{
+                                    @"id" : [UIDevice currentDevice].identifierForVendor.UUIDString,
+                                    @"creationDate" : [NSString stringWithFormat:@"%f", [NSDate date].timeIntervalSince1970],
+                                    @"device" : _broadcastingDeviceName
+                                    };
+    
+    _advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:kServiceType discoveryInfo:discoveryInfo session:self.session];
 }
+
+
 
 - (void)initializeNearbyServiceBrowser {
     if (_browser) {
@@ -75,10 +95,12 @@ static NSString * const kServiceType = @"CNV-service";
         [self initializeNearbyServiceBrowser];
     }
     [self.browser startBrowsingForPeers];
+    self.browsing = true;
 }
 
 - (void)endBrowsing {
     _browser ? [_browser stopBrowsingForPeers] : 0x0;
+    self.browsing = false;
 }
 
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)peerID withDiscoveryInfo:(NSDictionary<NSString *,NSString *> *)info {
@@ -88,6 +110,7 @@ static NSString * const kServiceType = @"CNV-service";
         [self.delegate browserFoundPeer:peerID];
     }
 }
+
 
 - (void)browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error {
     NSLog(@"Browser failed browsing peers with error: %@", error);
@@ -99,7 +122,6 @@ static NSString * const kServiceType = @"CNV-service";
         [self.delegate browserLostPeer:peerID];
     }
 }
-
 
 - (void)addPeer:(MCPeerID *)peerID {
     NSMutableArray *mutableDataSource = [self.peers mutableCopy];
@@ -119,52 +141,53 @@ static NSString * const kServiceType = @"CNV-service";
 }
 
 
-- (void)invitePeer:(MCPeerID *)peer {
-    self.session = [[MCSession alloc] initWithPeer:self.localPeerID];
-    [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:20];
-}
-
 
 
 #pragma mark - Advertising
 
 
 - (void)startAdvertising {
-    if (!self.advertiser) {
-        [self initializeNearbyServiceAdvertizer];
+    if (!_advertiserAssistant) {
+        [self initializeAdvertizerAssistant];
     }
-    [_advertiser startAdvertisingPeer];
-    _advertising = true;
+    _advertiserAssistant.delegate = self;
+    [_advertiserAssistant start];
+    self.advertising = true;
 }
 
 - (void)endAdvertising {
-    self.isAdvertising ? [_advertiser stopAdvertisingPeer] : 0x0;
-    _advertising = false;
+    [_advertiserAssistant stop];
+    self.advertising = false;
 }
 
-- (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser
-                    didReceiveInvitationFromPeer:(MCPeerID *)peerID
-                                     withContext:(NSData *)context
-                               invitationHandler:(void (^)(BOOL, MCSession * _Nullable))invitationHandler {
+- (void)advertiserAssistantWillPresentInvitation:(MCAdvertiserAssistant *)advertiserAssistant {
     
-    if ([_acceptedPeers containsObject:peerID]) {
-        invitationHandler(false, nil);
-    }
-    else if ([self.delegate respondsToSelector:@selector(advertiserDidReceiveInvintationFromPeer:invintationHandler:)]) {
-        [self.delegate advertiserDidReceiveInvintationFromPeer:peerID invintationHandler:invitationHandler];
-    }
 }
 
-- (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error {
-    NSLog(@"Unable to start advertising peer. Error: %@", error );
-    if ([self.delegate respondsToSelector:@selector(advertiserFailedStart)]) {
-        [self.delegate advertiserFailedStart];
-    }
+- (void)advertiserAssistantDidDismissInvitation:(MCAdvertiserAssistant *)advertiserAssistant {
+    
 }
+
+
+
+
+
 
 
 
 #pragma mark - Session
+
+- (MCSession *)session {
+    if (!_session) {
+        _session = [[MCSession alloc] initWithPeer:self.localPeerID securityIdentity:nil encryptionPreference:MCEncryptionNone];
+        _session.delegate = self;
+    }
+    return _session;
+}
+
+-(void)setSession:(MCSession *)session {
+    _session = session;
+}
 
 
 - (void)invitePeerToSession:(MCPeerID *)peer {
@@ -173,22 +196,73 @@ static NSString * const kServiceType = @"CNV-service";
     if (isMe) {
         return;
     }
-    
-    if (!_session) {
-        self.session = [[MCSession alloc] initWithPeer:self.localPeerID];
-    }
-    [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:15];
+    [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:30];
 }
+
+
+- (BOOL)sendMessage:(NSString *)message toPeer:(MCPeerID *)peer {
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:message];
+    NSError *error = nil;
+    
+    BOOL result = [self.session sendData:data toPeers:@[peer] withMode:MCSessionSendDataReliable error:&error];
+    if (!result) {
+        NSLog(@"An error occurred while trying to send message to peer:%@", error);
+    }
+    return result;
+}
+
+
 
 
 // Remote peer changed state.
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        switch (state) {
+            case MCSessionStateConnected:
+                _connected = true;
+                [self.acceptedPeers addObject:peerID];
+                
+                if (self.isBrowsing && [self.delegate respondsToSelector:@selector(browserDidConnectToPeer:)]) {
+                    [self.delegate browserDidConnectToPeer:peerID];
+                }
+                else if (self.isAdvertising && [self.delegate respondsToSelector:@selector(advertiserDidConnectToPeer:)]) {
+                    [self.delegate advertiserDidConnectToPeer:peerID];
+                }
+                break;
+                
+            case MCSessionStateConnecting:
+                break;
+                
+                
+            case MCSessionStateNotConnected:
+                _connected = false;
+                [self removePeerFromAcceptedPeers:peerID];
+                if (self.isBrowsing && [self.delegate respondsToSelector:@selector(browserDidDisconnectFromPeer:)]) {
+                    [self.delegate browserDidDisconnectFromPeer:peerID];
+                }
+                else if (self.isAdvertising && [self.delegate respondsToSelector:@selector(advertiserDidDisconnectFromPeer:)]) {
+                    [self.delegate advertiserDidDisconnectFromPeer:peerID];
+                }
+                break;
+            default:
+                break;
+        }
+    });
+    
 }
 
 // Received data from remote peer.
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
-    
+    NSString *message = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    if ([self.delegate respondsToSelector:@selector(session:didReceiveMessage:fromPeer:)]) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate session:session didReceiveMessage:message fromPeer:peerID];
+        });
+    }
 }
 
 // Received a byte stream from remote peer.
@@ -218,17 +292,14 @@ static NSString * const kServiceType = @"CNV-service";
     
 }
 
-// Made first contact with peer and have identity information about the
-// remote peer (certificate may be nil).
-- (void)        session:(MCSession *)session
-  didReceiveCertificate:(nullable NSArray *)certificate
-               fromPeer:(MCPeerID *)peerID
-     certificateHandler:(void (^)(BOOL accept))certificateHandler {
-    
+- (void)removePeerFromAcceptedPeers:(MCPeerID *)peer {
+    for (MCPeerID *acceptedPeer in self.acceptedPeers) {
+        if ((uint32_t)acceptedPeer.hash == (uint32_t)peer.hash) {
+            [self.acceptedPeers removeObject:acceptedPeer];
+            return;
+        }
+    }
 }
-
-
-
 
 
 @end

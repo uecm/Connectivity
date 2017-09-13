@@ -9,6 +9,10 @@
 #import "AppDelegate.h"
 #import "CNVConnectivityManager.h"
 
+
+#import <CRToast.h>
+#import <Colours.h>
+
 @interface AppDelegate ()
 
 @end
@@ -18,6 +22,19 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    NSDictionary *options = @{
+                              kCRToastFontKey : [UIFont systemFontOfSize:24 weight:UIFontWeightHeavy],
+                              kCRToastTextAlignmentKey : @(NSTextAlignmentLeft),
+                              kCRToastBackgroundColorKey : [UIColor indigoColor],
+                              kCRToastTextColorKey : [UIColor ghostWhiteColor],
+                              kCRToastAnimationInTypeKey : @(CRToastAnimationTypeSpring),
+                              kCRToastAnimationOutTypeKey : @(CRToastAnimationTypeLinear),
+                              kCRToastAnimationInDirectionKey : @(CRToastAnimationDirectionLeft),
+                              kCRToastAnimationOutDirectionKey : @(CRToastAnimationDirectionRight),
+                              kCRToastNotificationTypeKey : @(CRToastTypeNavigationBar)
+                              };
+    [CRToastManager setDefaultOptions:options];
+    
     return YES;
 }
 
@@ -46,7 +63,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    if ([CNVConnectivityManager sharedManager].advertiser) {
+    if ([CNVConnectivityManager sharedManager].isAdvertising) {
         [[CNVConnectivityManager sharedManager] endAdvertising];
     }
 }

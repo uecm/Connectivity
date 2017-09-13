@@ -7,23 +7,32 @@
 //
 
 #import "CNVMainTableViewController.h"
-#import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "CNVHostListTableViewController.h"
+#import "CNVMessagePopoverViewController.h"
+
 #import "CNVConnectivityManager.h"
 
-@interface CNVMainTableViewController () <CNVHostListDelegate, CNVConnectivityDelegate>
+#import <Colours.h>
+#import <CRToast.h>
+
+
+@interface CNVMainTableViewController () <CNVHostListDelegate, CNVConnectivityDelegate, CNVMessageComposerDelegate, UIPopoverPresentationControllerDelegate>
+
+@property (weak, nonatomic) IBOutlet UIButton *advertisingButton;
+@property (weak, nonatomic) IBOutlet UIButton *connectButton;
 
 @property (strong, nonatomic) MCPeerID *selectedPeer;
 @property (strong, nonatomic) NSArray *tableMap;
 
 @end
 
-static NSString * const kNetworkCellIdentifier           = @"networkSettingsCell";
+static NSString * const kNetworkSettingsCellIdentifier   = @"networkSettingsCell";
+static NSString * const kGeneralSettingsCellIdentifier   = @"generalSettingsCell";
 static NSString * const kCurrentConnectionCellIdentifier = @"currentConnectionCell";
 static NSString * const kHostConnectionCellIdentifier    = @"hostConnectionCell";
 static NSString * const kJoinConnectionCellIdentifier    = @"joinConnectionCell";
 static NSString * const kConnectCellIdentifier           = @"connectCell";
-
+static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
 
 @implementation CNVMainTableViewController
 
@@ -38,6 +47,7 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
     
     
     [self initializeTableView];
+    [self setupAdvertisingButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -52,23 +62,45 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
 }
 
 - (void)initializeTableView {
-    NSDictionary *settingsSection = @{ kNetworkCellIdentifier: [NSIndexPath indexPathForRow:0 inSection:0] };
+    NSDictionary *settingsSection = @{
+                                      kNetworkSettingsCellIdentifier : [NSIndexPath indexPathForRow:0 inSection:0],
+                                      kGeneralSettingsCellIdentifier : [NSIndexPath indexPathForRow:1 inSection:0]
+                                      };
     
     
-    NSDictionary *connectionSection = @{ kCurrentConnectionCellIdentifier : [NSIndexPath indexPathForRow:0 inSection:1],
-                                         kHostConnectionCellIdentifier    : [NSIndexPath indexPathForRow:1 inSection:1],
-                                         kJoinConnectionCellIdentifier    : [NSIndexPath indexPathForRow:2 inSection:1],
-                                         kConnectCellIdentifier           : [NSIndexPath indexPathForRow:3 inSection:1],
+    NSDictionary *connectionSection = @{
+                                        kCurrentConnectionCellIdentifier : [NSIndexPath indexPathForRow:0 inSection:1],
+                                        kHostConnectionCellIdentifier    : [NSIndexPath indexPathForRow:1 inSection:1],
+                                        kJoinConnectionCellIdentifier    : [NSIndexPath indexPathForRow:2 inSection:1],
+                                        kConnectCellIdentifier           : [NSIndexPath indexPathForRow:3 inSection:1],
                                         };
-    self.tableMap = @[settingsSection, connectionSection];
+    
+    NSDictionary *interactionSection = @{
+                                         kSendMessageIdentifier : [NSIndexPath indexPathForRow:0 inSection:2]
+                                         };
+    
+    self.tableMap = @[settingsSection, connectionSection, interactionSection];
+    
+    [self setConnectButtonStateConnect];
     
     [self.tableView reloadData];
 }
 
+
+
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.tableMap ? self.tableMap.count : 0;
+    if (!self.tableMap) {
+        return 0;
+    }
+    if ([CNVConnectivityManager sharedManager].isConnected) {
+        return self.tableMap.count;
+    }
+    else {
+        return self.tableMap.count - 1;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -104,6 +136,12 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
     [self.tableView reloadData];
 }
 
+- (void)messageComposer:(CNVMessagePopoverViewController *)composer DidFinishEditingWithMessage:(NSString *)message {
+    CNVConnectivityManager *manager = [CNVConnectivityManager sharedManager];
+    [manager sendMessage:message toPeer:manager.acceptedPeers.firstObject];
+}
+
+#pragma mark Browser
 
 - (void)browserLostPeer:(MCPeerID *)peerID {
     if ((uint32_t)peerID.hash == (uint32_t)self.selectedPeer.hash) {
@@ -116,33 +154,131 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
     }
 }
 
-
-- (void)advertiserDidReceiveInvintationFromPeer:(MCPeerID *)peerID
-                             invintationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
+- (void)browserDidConnectToPeer:(MCPeerID *)peer {
+    [self setConnectButtonStateConnected];
+    [self updateCurrentConnectionCell];
     
-    CNVConnectivityManager *connectivityManager = [CNVConnectivityManager sharedManager];
-    [self showInvintationHandlerActionSheetFromPeer:peerID withCompletion:^(BOOL accepted) {
-        if (accepted) {
-            [connectivityManager.acceptedPeers addObject:peerID];
-            [self updateCurrentConnectionCell];
-        }
-        invitationHandler(accepted, connectivityManager.session);
-    }];
+    [self.tableView reloadData];
 }
+
+- (void)browserDidDisconnectFromPeer:(MCPeerID *)peer {
+    [self setConnectButtonStateConnect];
+    [self updateCurrentConnectionCell];
+    
+    [self.tableView reloadData];
+}
+
+
+#pragma mark Advertiser
+
+- (void)advertiserFailedStart {
+    [self setButtonStateFailed];
+}
+
+- (void)advertiserDidConnectToPeer:(MCPeerID *)peer {
+    [self updateCurrentConnectionCell];
+    
+    [self.tableView reloadData];
+}
+
+- (void)advertiserDidDisconnectFromPeer:(MCPeerID *)peer {
+    [self updateCurrentConnectionCell];
+    
+    [self.tableView reloadData];
+}
+
+
+#pragma mark Session
+
+- (void)session:(MCSession *)session didReceiveMessage:(NSString *)message fromPeer:(MCPeerID *)peer {
+    [self showToastWithMessage:message fromSender:peer.displayName];
+}
+
 
 
 
 #pragma mark - Buttons
 
 - (IBAction)connectPressed:(id)sender {
+    if ([CNVConnectivityManager sharedManager].isConnected) {
+        return;
+    }
     
     [[CNVConnectivityManager sharedManager] invitePeerToSession:self.selectedPeer];
 }
 
 
+- (IBAction)advertisingButtonPressed:(id)sender {
+    if ([CNVConnectivityManager sharedManager].isAdvertising == false) {
+        [[CNVConnectivityManager sharedManager] startAdvertising];
+        [self setButtonStateAdvertising];
+    }
+    else {
+        [self showEndAdvertisingActionSheet];
+    }
+}
+
+
+
+
+#pragma mark - Button States
+
+- (void)setButtonStateAdvertising {
+    UIButton *button = self.advertisingButton;
+    
+    button.backgroundColor = [UIColor seafoamColor];
+    [button setTitle:@"Advertising" forState:UIControlStateNormal];
+}
+
+- (void)setButtonStateFailed {
+    UIButton *button = self.advertisingButton;
+    
+    button.backgroundColor = [UIColor tomatoColor];
+    [button setTitle:@"Failed" forState:UIControlStateNormal];
+}
+
+- (void)setButtonStateDefault {
+    UIButton *button = self.advertisingButton;
+    
+    button.backgroundColor = [UIColor pastelBlueColor];
+    [button setTitle:@"Start advertising" forState:UIControlStateNormal];
+}
+
+
+- (void)setConnectButtonStateConnect {
+    [self.connectButton setTitleColor:[UIColor pastelBlueColor] forState:UIControlStateNormal];
+    [self.connectButton setTitle:@"Connect" forState:UIControlStateNormal];
+}
+
+- (void)setConnectButtonStateConnected {
+    [self.connectButton setTitleColor:[UIColor seafoamColor] forState:UIControlStateNormal];
+    [self.connectButton setTitle:@"Connected" forState:UIControlStateNormal];
+}
+
 
 
 #pragma mark - Misc
+
+
+- (void)showToastWithMessage:(NSString *)message fromSender:(NSString *)sender {
+    
+    NSString *text = [NSString stringWithFormat:@"%@: %@", sender, message];
+    
+    [CRToastManager showNotificationWithOptions:@{kCRToastTextKey : text} completionBlock:nil];
+}
+
+
+- (void)setupAdvertisingButton {
+    self.advertisingButton.layer.cornerRadius = 8.f;
+    self.advertisingButton.clipsToBounds = true;
+    
+    if ([CNVConnectivityManager sharedManager].isAdvertising) {
+        [self setButtonStateAdvertising];
+    }
+    else {
+        [self setButtonStateDefault];
+    }
+}
 
 
 - (void)updateCurrentConnectionCell {
@@ -157,20 +293,25 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
 }
 
 
-- (void)showInvintationHandlerActionSheetFromPeer:(MCPeerID *)peer withCompletion:(void(^)(BOOL accepted))completion {
-    NSString *message = [NSString stringWithFormat:@"%@ wants to join your session", peer.displayName];
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Accept Request?"
-                                                                         message:message
-                                                                  preferredStyle:UIAlertControllerStyleActionSheet];
+
+- (void)showEndAdvertisingActionSheet {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                             message:@"Are you sure you want to stop advertising?"
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Stop"
+                                                        style:UIAlertActionStyleDestructive
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [[CNVConnectivityManager sharedManager] endAdvertising];
+                                                          [self setButtonStateDefault];
+                                                          [alertController dismissViewControllerAnimated:true completion:nil];
+                                                      }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                          [alertController dismissViewControllerAnimated:true completion:nil];
+                                                      }]];
     
-    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Accept" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        completion(true);
-    }]];
-    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Decline" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        completion(false);
-    }]];
-    
-    [self presentViewController:actionSheet animated:true completion:nil];
+    [self presentViewController:alertController animated:true completion:nil];
 }
 
 
@@ -184,7 +325,18 @@ static NSString * const kConnectCellIdentifier           = @"connectCell";
         destination.selectedPeer = self.selectedPeer;
         destination.delegate = self;
     }
-    
+    else if ([segue.identifier isEqualToString:@"messagePopover"]) {
+        CNVMessagePopoverViewController *destination = segue.destinationViewController;
+        destination.popoverPresentationController.delegate = self;
+        destination.popoverPresentationController.sourceView = sender;
+        destination.preferredContentSize = CGSizeMake(300, 400);
+        destination.delegate = self;
+        destination.receiverName = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject.displayName;
+    }
+}
+
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller {
+    return UIModalPresentationNone;
 }
 
 
