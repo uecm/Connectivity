@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "CNVConnectivityManager.h"
+#import "CNVTicTacToeViewController.h"
 
 
 #import <CRToast.h>
@@ -34,6 +35,7 @@
                               kCRToastNotificationTypeKey : @(CRToastTypeNavigationBar)
                               };
     [CRToastManager setDefaultOptions:options];
+    
     
     return YES;
 }

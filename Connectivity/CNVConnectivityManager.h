@@ -25,6 +25,7 @@
 - (void)advertiserDidDisconnectFromPeer:(MCPeerID *)peer;
 
 - (void)session:(MCSession *)session didReceiveMessage:(NSString *)message fromPeer:(MCPeerID *)peer;
+- (void)session:(MCSession *)session didReceiveDictionary:(NSDictionary *)dictionary fromPeer:(MCPeerID *)peer;
 
 @end
 
@@ -64,5 +65,6 @@
 - (void)invitePeerToSession:(MCPeerID *)peer;
 
 - (BOOL)sendMessage:(NSString *)message toPeer:(MCPeerID *)peer;
+- (BOOL)sendDictionaty:(NSDictionary *)dictionary toPeer:(MCPeerID *)peer;
 
 @end

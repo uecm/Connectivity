@@ -9,8 +9,10 @@
 #import "CNVMainTableViewController.h"
 #import "CNVHostListTableViewController.h"
 #import "CNVMessagePopoverViewController.h"
-
+#import "CNVMainNavigationController.h"
 #import "CNVConnectivityManager.h"
+#import "CNVTicTacToeViewController.h"
+
 
 #import <Colours.h>
 #import <CRToast.h>
@@ -33,6 +35,8 @@ static NSString * const kHostConnectionCellIdentifier    = @"hostConnectionCell"
 static NSString * const kJoinConnectionCellIdentifier    = @"joinConnectionCell";
 static NSString * const kConnectCellIdentifier           = @"connectCell";
 static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
+static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
+
 
 @implementation CNVMainTableViewController
 
@@ -44,7 +48,6 @@ static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
     
     [self initializeTableView];
     [self setupAdvertisingButton];
@@ -76,7 +79,8 @@ static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
                                         };
     
     NSDictionary *interactionSection = @{
-                                         kSendMessageIdentifier : [NSIndexPath indexPathForRow:0 inSection:2]
+                                         kSendMessageIdentifier : [NSIndexPath indexPathForRow:0 inSection:2],
+                                         kTicTacToeIdentifier : [NSIndexPath indexPathForRow:1 inSection:2]
                                          };
     
     self.tableMap = @[settingsSection, connectionSection, interactionSection];
@@ -137,6 +141,9 @@ static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
 }
 
 - (void)messageComposer:(CNVMessagePopoverViewController *)composer DidFinishEditingWithMessage:(NSString *)message {
+    if (message.length == 0) {
+        return;
+    }
     CNVConnectivityManager *manager = [CNVConnectivityManager sharedManager];
     [manager sendMessage:message toPeer:manager.acceptedPeers.firstObject];
 }
@@ -332,6 +339,10 @@ static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
         destination.preferredContentSize = CGSizeMake(300, 400);
         destination.delegate = self;
         destination.receiverName = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject.displayName;
+    }
+    else if ([segue.identifier isEqualToString:@"ticTacToeSegue"]) {
+        CNVTicTacToeViewController *destination = segue.destinationViewController;
+        destination.peer = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject;
     }
 }
 

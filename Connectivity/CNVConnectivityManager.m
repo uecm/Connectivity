@@ -213,12 +213,21 @@ static NSString * const kServiceType = @"CNV-game-srvc";
 }
 
 
+- (BOOL)sendDictionaty:(NSDictionary *)dictionary toPeer:(MCPeerID *)peer {
+    NSData *dictData = [NSKeyedArchiver archivedDataWithRootObject:dictionary];
+    NSError *error = nil;
+    
+    BOOL result = [self.session sendData:dictData toPeers:@[peer] withMode:MCSessionSendDataReliable error:&error];
+    if (!result) {
+        NSLog(@"An error occurred while trying to send dictionary to peer:%@", error);
+    }
+    return result;
+}
+
 
 
 // Remote peer changed state.
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
-    
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         switch (state) {
             case MCSessionStateConnected:
@@ -256,14 +265,28 @@ static NSString * const kServiceType = @"CNV-game-srvc";
 
 // Received data from remote peer.
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
-    NSString *message = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    if ([self.delegate respondsToSelector:@selector(session:didReceiveMessage:fromPeer:)]) {
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate session:session didReceiveMessage:message fromPeer:peerID];
-        });
+    
+    id unarchivedData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    if ([unarchivedData isKindOfClass:[NSString class]]) {
+        NSString *message = (NSString *)unarchivedData;
+        if ([self.delegate respondsToSelector:@selector(session:didReceiveMessage:fromPeer:)]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate session:session didReceiveMessage:message fromPeer:peerID];
+            });
+        }
+    }
+    else if ([unarchivedData isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *dictionaty = (NSDictionary *)unarchivedData;
+        if ([self.delegate respondsToSelector:@selector(session:didReceiveDictionary:fromPeer:)]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate session:session didReceiveDictionary:dictionaty fromPeer:peerID];
+            });
+        }
     }
 }
+
+
 
 // Received a byte stream from remote peer.
 - (void)    session:(MCSession *)session
