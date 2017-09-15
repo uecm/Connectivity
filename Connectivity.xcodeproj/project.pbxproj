@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		63338DFB8484BD796972EDF2 /* libPods-Connectivity.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7889CAA935DD026E18657A1F /* libPods-Connectivity.a */; };
 		CE6695911F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6695901F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.m */; };
-		CE6695971F6A9A2800A7AECD /* CNVMainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6695961F6A9A2800A7AECD /* CNVMainNavigationController.m */; };
+		CE66959A1F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6695991F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.m */; };
+		CE66959C1F6BC72B00A7AECD /* TicTacToe.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE66959B1F6BC72B00A7AECD /* TicTacToe.storyboard */; };
+		CE66959F1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE66959E1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.m */; };
 		CE9BD3081F698F0000C10E01 /* CNVGeneralSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9BD3071F698F0000C10E01 /* CNVGeneralSettingsTableViewController.m */; };
 		CE9BD30B1F6A84E900C10E01 /* CNVTicTacToeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9BD30A1F6A84E900C10E01 /* CNVTicTacToeViewController.m */; };
 		CEA0F06B1F694ACE00155375 /* CNVMessagePopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA0F06A1F694ACE00155375 /* CNVMessagePopoverViewController.m */; };
@@ -29,8 +31,11 @@
 		7889CAA935DD026E18657A1F /* libPods-Connectivity.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Connectivity.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE66958F1F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVTicTacToeCollectionViewCell.h; sourceTree = "<group>"; };
 		CE6695901F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVTicTacToeCollectionViewCell.m; sourceTree = "<group>"; };
-		CE6695951F6A9A2800A7AECD /* CNVMainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVMainNavigationController.h; sourceTree = "<group>"; };
-		CE6695961F6A9A2800A7AECD /* CNVMainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVMainNavigationController.m; sourceTree = "<group>"; };
+		CE6695981F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVTicTacToeSessionInteractor.h; sourceTree = "<group>"; };
+		CE6695991F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVTicTacToeSessionInteractor.m; sourceTree = "<group>"; };
+		CE66959B1F6BC72B00A7AECD /* TicTacToe.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = TicTacToe.storyboard; sourceTree = "<group>"; };
+		CE66959D1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVTicTacToeEnterViewController.h; sourceTree = "<group>"; };
+		CE66959E1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVTicTacToeEnterViewController.m; sourceTree = "<group>"; };
 		CE9BD3061F698F0000C10E01 /* CNVGeneralSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVGeneralSettingsTableViewController.h; sourceTree = "<group>"; };
 		CE9BD3071F698F0000C10E01 /* CNVGeneralSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CNVGeneralSettingsTableViewController.m; sourceTree = "<group>"; };
 		CE9BD3091F6A84E900C10E01 /* CNVTicTacToeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CNVTicTacToeViewController.h; sourceTree = "<group>"; };
@@ -88,10 +93,15 @@
 		CE66958E1F6A87EC00A7AECD /* Tic Tac Toe */ = {
 			isa = PBXGroup;
 			children = (
+				CE66959B1F6BC72B00A7AECD /* TicTacToe.storyboard */,
+				CE66959D1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.h */,
+				CE66959E1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.m */,
 				CE9BD3091F6A84E900C10E01 /* CNVTicTacToeViewController.h */,
 				CE9BD30A1F6A84E900C10E01 /* CNVTicTacToeViewController.m */,
 				CE66958F1F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.h */,
 				CE6695901F6A881500A7AECD /* CNVTicTacToeCollectionViewCell.m */,
+				CE6695981F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.h */,
+				CE6695991F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.m */,
 			);
 			name = "Tic Tac Toe";
 			sourceTree = "<group>";
@@ -130,8 +140,6 @@
 			children = (
 				CEF961981F6296A8004105F8 /* AppDelegate.h */,
 				CEF961991F6296A8004105F8 /* AppDelegate.m */,
-				CE6695951F6A9A2800A7AECD /* CNVMainNavigationController.h */,
-				CE6695961F6A9A2800A7AECD /* CNVMainNavigationController.m */,
 				CEF961AC1F629F83004105F8 /* CNVMainTableViewController.h */,
 				CEF961AD1F629F83004105F8 /* CNVMainTableViewController.m */,
 				CE9BD3051F698EEA00C10E01 /* Settings */,
@@ -224,6 +232,7 @@
 				CEF961A51F6296A9004105F8 /* LaunchScreen.storyboard in Resources */,
 				CEF961A21F6296A8004105F8 /* Assets.xcassets in Resources */,
 				CEF961A01F6296A8004105F8 /* Main.storyboard in Resources */,
+				CE66959C1F6BC72B00A7AECD /* TicTacToe.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,9 +295,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEF9619A1F6296A8004105F8 /* AppDelegate.m in Sources */,
-				CE6695971F6A9A2800A7AECD /* CNVMainNavigationController.m in Sources */,
 				CEF961AE1F629F83004105F8 /* CNVMainTableViewController.m in Sources */,
 				CEF961B71F62A075004105F8 /* CNVHostListTableViewController.m in Sources */,
+				CE66959A1F6BC43200A7AECD /* CNVTicTacToeSessionInteractor.m in Sources */,
+				CE66959F1F6BCA9400A7AECD /* CNVTicTacToeEnterViewController.m in Sources */,
 				CEF961BA1F62D480004105F8 /* CNVConnectivityManager.m in Sources */,
 				CE9BD30B1F6A84E900C10E01 /* CNVTicTacToeViewController.m in Sources */,
 				CEF961971F6296A7004105F8 /* main.m in Sources */,

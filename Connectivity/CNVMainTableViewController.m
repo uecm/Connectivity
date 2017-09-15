@@ -9,7 +9,6 @@
 #import "CNVMainTableViewController.h"
 #import "CNVHostListTableViewController.h"
 #import "CNVMessagePopoverViewController.h"
-#import "CNVMainNavigationController.h"
 #import "CNVConnectivityManager.h"
 #import "CNVTicTacToeViewController.h"
 
@@ -35,7 +34,7 @@ static NSString * const kHostConnectionCellIdentifier    = @"hostConnectionCell"
 static NSString * const kJoinConnectionCellIdentifier    = @"joinConnectionCell";
 static NSString * const kConnectCellIdentifier           = @"connectCell";
 static NSString * const kSendMessageIdentifier           = @"sendMessageCell";
-static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
+static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
 
 
 @implementation CNVMainTableViewController
@@ -128,6 +127,16 @@ static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
 }
 
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath == self.tableMap[2][kTicTacToeIdentifier]) {
+        UIStoryboard *ticTacToeStoryboard = [UIStoryboard storyboardWithName:@"TicTacToe" bundle:nil];
+        UINavigationController *destination = [ticTacToeStoryboard instantiateInitialViewController];
+        
+        [self.navigationController showViewController:destination sender:self];
+    }
+}
+
+
 
 #pragma mark - Delegates
 
@@ -145,7 +154,7 @@ static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
         return;
     }
     CNVConnectivityManager *manager = [CNVConnectivityManager sharedManager];
-    [manager sendMessage:message toPeer:manager.acceptedPeers.firstObject];
+    [manager sendMessage:message toPeer:manager.connectedPeers.firstObject];
 }
 
 #pragma mark Browser
@@ -294,7 +303,7 @@ static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
         return;
     }
     
-    MCPeerID *currentPeer = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject;
+    MCPeerID *currentPeer = [CNVConnectivityManager sharedManager].connectedPeers.firstObject;
     NSString *currerntConnectionText = currentPeer ? currentPeer.displayName : @"No connection";
     currentConnectionCell.detailTextLabel.text = currerntConnectionText;
 }
@@ -338,11 +347,7 @@ static NSString * const kTicTacToeIdentifier           = @"ticTacToeCell";
         destination.popoverPresentationController.sourceView = sender;
         destination.preferredContentSize = CGSizeMake(300, 400);
         destination.delegate = self;
-        destination.receiverName = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject.displayName;
-    }
-    else if ([segue.identifier isEqualToString:@"ticTacToeSegue"]) {
-        CNVTicTacToeViewController *destination = segue.destinationViewController;
-        destination.peer = [CNVConnectivityManager sharedManager].acceptedPeers.firstObject;
+        destination.receiverName = [CNVConnectivityManager sharedManager].connectedPeers.firstObject.displayName;
     }
 }
 

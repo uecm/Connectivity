@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, TicTacToePlayerType) {
 @property (assign, nonatomic) TicTacToePlayerType selectedPlayerType;
 
 
-- (void)selectWithPlayerType:(TicTacToePlayerType)type;
+- (void)selectWithPlayerType:(TicTacToePlayerType)type character:(NSString *)character;
 - (void)prepareForReuse;
 
 

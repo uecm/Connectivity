@@ -8,7 +8,7 @@
 
 #import "CNVTicTacToeViewController.h"
 #import "CNVTicTacToeCollectionViewCell.h"
-#import "CNVConnectivityManager.h"
+#import "CNVTicTacToeSessionInteractor.h"
 
 #import <CRToast.h>
 #import <Colours.h>
@@ -19,12 +19,13 @@ typedef NS_ENUM(NSInteger, GameMessageType) {
 };
 
 
-@interface CNVTicTacToeViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CNVConnectivityDelegate>
+@interface CNVTicTacToeViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CNVTicTacToeGameSessionDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *playAgainButton;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (assign, nonatomic) TicTacToePlayerType playerType;
+
 
 @end
 
@@ -42,9 +43,11 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [CNVConnectivityManager sharedManager].delegate = self;
+    [self initializeView];
+    self.sessionInteractor.delegate = self;
     
-    if ([CNVConnectivityManager sharedManager].isAdvertising) {
+    
+    if (self.sessionInteractor.isGameOwner) {
         self.playerType = TicTacToePlayerTypeCross;
         myTurn = true;
         self.statusLabel.text = @"Your turn";
@@ -52,27 +55,16 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     else {
         self.playerType = TicTacToePlayerTypeNought;
         myTurn = false;
-        NSString *statusLabelText = [NSString stringWithFormat:@"%@'s turn",self.peer.displayName];
+        NSString *statusLabelText = [NSString stringWithFormat:@"%@'s turn",self.sessionInteractor.opponent.displayName];
         self.statusLabel.text = statusLabelText;
     }
     gameOver = false;
-    
-    
-    CALayer *collectionLayer = self.collectionView.layer;
-    collectionLayer.cornerRadius = 8;
-    collectionLayer.borderWidth = 4;
-    collectionLayer.borderColor = [UIColor indigoColor].CGColor;
-    
-    
-    UIButton *button = self.playAgainButton;
-    button.layer.cornerRadius = 8;
-    button.layer.borderWidth = 0;
-    button.layer.borderColor = [UIColor indigoColor].CGColor;
-    button.alpha = 0;
-    button.backgroundColor = [UIColor indigoColor];
-    [button setTitleColor:[UIColor ghostWhiteColor] forState:UIControlStateNormal];
+}
 
-    self.statusLabel.textColor = [UIColor indigoColor];
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.sessionInteractor sendLeftGameMessage];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,6 +72,10 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     // Dispose of any resources that can be recreated.
 }
 
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 
 
 #pragma mark - Collection View Delegate / Data Source
@@ -110,18 +106,19 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     CNVTicTacToeCollectionViewCell *cell = (CNVTicTacToeCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     if (cell.isUsed || !myTurn || gameOver) {
         return;
     }
     
+    [self sendMessageWithIndexPath:indexPath playerType:self.playerType];
     myTurn = false;
     
-    NSString *statusLabelText = [NSString stringWithFormat:@"%@'s turn",self.peer.displayName];
+    NSString *statusLabelText = [NSString stringWithFormat:@"%@'s turn",self.sessionInteractor.opponent.displayName];
     self.statusLabel.text = statusLabelText;
     
-    [self sendMessageWithIndexPath:indexPath playerType:self.playerType];
-    [cell selectWithPlayerType:self.playerType];
+    [cell selectWithPlayerType:self.playerType character:self.sessionInteractor.currentPlayerPreferences[@"fighter"]];
     
     playField[indexPath.section][indexPath.item] = self.playerType;
     [self checkForGameEnd];
@@ -136,67 +133,66 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
 
 - (void)sendMessageWithIndexPath:(NSIndexPath *)indexPath playerType:(TicTacToePlayerType)type {
     NSDictionary *message = @{
-                              @"message_type" : @(GameMessageTypeEndTurn),
                               @"index_path"   : indexPath,
                               @"player_type"  : @(type)
                               };
-    [[CNVConnectivityManager sharedManager] sendDictionaty:message toPeer:self.peer];
-}
-
-- (void)sendPlayAgainMessage {
-    NSDictionary *message = @{
-                              @"message_type" : @(GameMessageTypeNewGame)
-                              };
-    [[CNVConnectivityManager sharedManager] sendDictionaty:message toPeer:self.peer];
-}
-
-- (void)session:(MCSession *)session didReceiveDictionary:(NSDictionary *)dictionary fromPeer:(MCPeerID *)peer {
-    
-    GameMessageType messageType = [dictionary[@"message_type"] integerValue];
-    
-    if (messageType == GameMessageTypeEndTurn) {
-        myTurn = true;
-        self.statusLabel.text = @"Your turn";
-
-        NSIndexPath *indexPath = dictionary[@"index_path"];
-        TicTacToePlayerType type = [dictionary[@"player_type"] unsignedIntegerValue];
-        
-        CNVTicTacToeCollectionViewCell *cell = (CNVTicTacToeCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        [cell selectWithPlayerType:type];
-        playField[indexPath.section][indexPath.item] = type;
-        
-        [self checkForGameEnd];
-    }
-    else if (messageType == GameMessageTypeNewGame) {
-        [self prepareForNewGame];
-    }
+    [self.sessionInteractor sendPerformedActionMessageWithParameters:message];
 }
 
 
+
+- (void)peerDidSendPlayAgainMessage:(MCPeerID *)peer {
+    [self prepareForNewGame];
+}
+
+- (void)peer:(MCPeerID *)peer didActionWithParameters:(NSDictionary *)parameters {
+    myTurn = true;
+    self.statusLabel.text = @"Your turn";
+
+    NSIndexPath *indexPath = parameters[@"index_path"];
+    TicTacToePlayerType type = [parameters[@"player_type"] unsignedIntegerValue];
+
+    CNVTicTacToeCollectionViewCell *cell = (CNVTicTacToeCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    [cell selectWithPlayerType:type character:self.sessionInteractor.opponentPlayerPreferences[@"fighter"]];
+    playField[indexPath.section][indexPath.item] = type;
+
+
+    [self checkForGameEnd];
+}
 
 #pragma mark - Buttons
 
 
 - (IBAction)playAgainPressed:(id)sender {
     [self prepareForNewGame];
-    [self sendPlayAgainMessage];
+    [self.sessionInteractor sendPlayAgainMessage];
 }
 
 
-
+ 
 #pragma mark - Misc
 
 
+- (void)initializeView {
+    CALayer *collectionLayer = self.collectionView.layer;
+    collectionLayer.cornerRadius = 8;
+    collectionLayer.borderWidth = 4;
+    collectionLayer.borderColor = [UIColor indigoColor].CGColor;
+    
+    
+    UIButton *button = self.playAgainButton;
+    button.layer.cornerRadius = 8;
+    button.layer.borderWidth = 0;
+    button.layer.borderColor = [UIColor indigoColor].CGColor;
+    button.alpha = 0;
+    button.backgroundColor = [UIColor indigoColor];
+    [button setTitleColor:[UIColor ghostWhiteColor] forState:UIControlStateNormal];
+    
+    self.statusLabel.textColor = [UIColor indigoColor];
+}
+
+
 - (void)prepareForNewGame {
-    if ([CNVConnectivityManager sharedManager].isAdvertising) {
-        myTurn = true;
-        self.statusLabel.text = @"Your turn";
-    }
-    else {
-        myTurn = false;
-        NSString *statusLabelText = [NSString stringWithFormat:@"%@'s turn",self.peer.displayName];
-        self.statusLabel.text = statusLabelText;
-    }
     
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -283,7 +279,7 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
         textString = @"You Won!";
     }
     else {
-        textString = [NSString stringWithFormat:@"%@ Won!",self.peer.displayName];
+        textString = [NSString stringWithFormat:@"%@ Won!",self.sessionInteractor.opponent.displayName];
     }
     
     [CRToastManager showNotificationWithMessage:textString completionBlock:^{

@@ -23,19 +23,10 @@
     self.used = false;
 }
 
-- (void)selectWithPlayerType:(TicTacToePlayerType)type {
+- (void)selectWithPlayerType:(TicTacToePlayerType)type character:(NSString *)character{
     self.used = true;
     self.selectedPlayerType = type;
-    
-    switch (type) {
-        case TicTacToePlayerTypeCross:
-            self.label.text = @"💩";
-            break;
-            
-        default:
-            self.label.text = @"🌚";
-            break;
-    }
+    self.label.text = character;
 }
 
 - (void)prepareForReuse {

@@ -20,7 +20,7 @@ static NSString * const kServiceType = @"CNV-game-srvc";
     if (self) {
         [self initializeLocalPeerID];
         self.peers = @[];
-        self.acceptedPeers = @[].mutableCopy;
+        self.connectedPeers = @[].mutableCopy;
         self.broadcastingDeviceName = [UIDevice currentDevice].name;
     }
     return self;
@@ -232,7 +232,7 @@ static NSString * const kServiceType = @"CNV-game-srvc";
         switch (state) {
             case MCSessionStateConnected:
                 _connected = true;
-                [self.acceptedPeers addObject:peerID];
+                [self.connectedPeers addObject:peerID];
                 
                 if (self.isBrowsing && [self.delegate respondsToSelector:@selector(browserDidConnectToPeer:)]) {
                     [self.delegate browserDidConnectToPeer:peerID];
@@ -248,7 +248,7 @@ static NSString * const kServiceType = @"CNV-game-srvc";
                 
             case MCSessionStateNotConnected:
                 _connected = false;
-                [self removePeerFromAcceptedPeers:peerID];
+                [self removePeerFromconnectedPeers:peerID];
                 if (self.isBrowsing && [self.delegate respondsToSelector:@selector(browserDidDisconnectFromPeer:)]) {
                     [self.delegate browserDidDisconnectFromPeer:peerID];
                 }
@@ -315,10 +315,10 @@ static NSString * const kServiceType = @"CNV-game-srvc";
     
 }
 
-- (void)removePeerFromAcceptedPeers:(MCPeerID *)peer {
-    for (MCPeerID *acceptedPeer in self.acceptedPeers) {
+- (void)removePeerFromconnectedPeers:(MCPeerID *)peer {
+    for (MCPeerID *acceptedPeer in self.connectedPeers) {
         if ((uint32_t)acceptedPeer.hash == (uint32_t)peer.hash) {
-            [self.acceptedPeers removeObject:acceptedPeer];
+            [self.connectedPeers removeObject:acceptedPeer];
             return;
         }
     }

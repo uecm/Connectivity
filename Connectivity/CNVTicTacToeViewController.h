@@ -7,10 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-@class MCPeerID;
+#import "CNVTicTacToeSessionInteractor.h"
 
 @interface CNVTicTacToeViewController : UIViewController
 
-@property (strong, nonatomic) MCPeerID *peer;
+
+@property (strong, nonatomic) NSDictionary *playerPreferences;
+@property (strong, nonatomic) CNVTicTacToeSessionInteractor *sessionInteractor;
+
+
 
 @end

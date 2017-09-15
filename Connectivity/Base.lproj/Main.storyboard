@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -212,9 +211,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="a5u-mq-gC8" kind="show" identifier="ticTacToeSegue" id="0W4-Ht-X2K"/>
-                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -418,124 +414,11 @@
             </objects>
             <point key="canvasLocation" x="-317" y="769"/>
         </scene>
-        <!--Tic-Tac-Toe-->
-        <scene sceneID="tyd-PJ-61K">
-            <objects>
-                <viewController title="Tic-Tac-Toe" automaticallyAdjustsScrollViewInsets="NO" id="a5u-mq-gC8" customClass="CNVTicTacToeViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Ieh-gm-nvu"/>
-                        <viewControllerLayoutGuide type="bottom" id="1Op-a9-VIv"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="i4K-NI-3BZ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fOw-wq-Vwv">
-                                <rect key="frame" x="20" y="181" width="374" height="374"/>
-                                <color key="backgroundColor" red="0.76533446094147473" green="0.92707812365586173" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" secondItem="fOw-wq-Vwv" secondAttribute="width" multiplier="1:1" id="yEC-0p-N92"/>
-                                </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="4" minimumInteritemSpacing="4" id="aD6-Px-qNg">
-                                    <size key="itemSize" width="118" height="101"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="4" minY="4" maxX="4" maxY="4"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ticTacToeCell" id="WTf-VY-OEh" customClass="CNVTicTacToeCollectionViewCell">
-                                        <rect key="frame" x="4" y="4" width="118" height="101"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="118" height="101"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IGw-D5-CTt">
-                                                    <rect key="frame" x="0.0" y="0.0" width="118" height="101"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.29999999999999999" translatesAutoresizingMaskIntoConstraints="NO" id="bNb-ne-lS6">
-                                                            <rect key="frame" x="0.0" y="0.0" width="118" height="101"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="70"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="bottom" secondItem="bNb-ne-lS6" secondAttribute="bottom" id="RYL-os-Agz"/>
-                                                        <constraint firstItem="bNb-ne-lS6" firstAttribute="top" secondItem="IGw-D5-CTt" secondAttribute="top" id="dtV-3X-pD3"/>
-                                                        <constraint firstAttribute="trailing" secondItem="bNb-ne-lS6" secondAttribute="trailing" id="rqh-yg-6kF"/>
-                                                        <constraint firstItem="bNb-ne-lS6" firstAttribute="leading" secondItem="IGw-D5-CTt" secondAttribute="leading" id="rv2-y5-feJ"/>
-                                                    </constraints>
-                                                </view>
-                                            </subviews>
-                                        </view>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="IGw-D5-CTt" secondAttribute="bottom" id="Fhk-NB-YQG"/>
-                                            <constraint firstAttribute="trailing" secondItem="IGw-D5-CTt" secondAttribute="trailing" id="Zbc-ev-RfC"/>
-                                            <constraint firstItem="IGw-D5-CTt" firstAttribute="top" secondItem="WTf-VY-OEh" secondAttribute="top" id="f8u-GY-3c3"/>
-                                            <constraint firstItem="IGw-D5-CTt" firstAttribute="leading" secondItem="WTf-VY-OEh" secondAttribute="leading" id="wm3-LC-Lfe"/>
-                                        </constraints>
-                                        <connections>
-                                            <outlet property="label" destination="bNb-ne-lS6" id="9s9-E0-Rc0"/>
-                                        </connections>
-                                    </collectionViewCell>
-                                </cells>
-                                <connections>
-                                    <outlet property="dataSource" destination="a5u-mq-gC8" id="tjx-Oc-Rat"/>
-                                    <outlet property="delegate" destination="a5u-mq-gC8" id="Jkr-kj-p8K"/>
-                                </connections>
-                            </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XIC-aL-2BC">
-                                <rect key="frame" x="147.33333333333331" y="585" width="119.99999999999994" height="40"/>
-                                <color key="backgroundColor" red="0.76573038101196289" green="0.92509526014328003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="2we-U9-uDX"/>
-                                    <constraint firstAttribute="width" constant="120" id="ZbH-eG-09w"/>
-                                </constraints>
-                                <state key="normal" title="Play Again">
-                                    <color key="titleColor" red="0.2418578700219787" green="0.47927017926537135" blue="0.99069660902023315" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="playAgainPressed:" destination="a5u-mq-gC8" eventType="touchUpInside" id="dYW-HO-RoY"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting for an Opponent" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="csT-fq-fJ1">
-                                <rect key="frame" x="20" y="124.66666666666669" width="312" height="32.333333333333314"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="26"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="fOw-wq-Vwv" firstAttribute="centerX" secondItem="i4K-NI-3BZ" secondAttribute="centerX" id="0qp-A8-F1N"/>
-                            <constraint firstItem="fOw-wq-Vwv" firstAttribute="centerY" secondItem="i4K-NI-3BZ" secondAttribute="centerY" id="9OA-cL-Q3s"/>
-                            <constraint firstItem="XIC-aL-2BC" firstAttribute="centerX" secondItem="i4K-NI-3BZ" secondAttribute="centerX" id="DCO-ng-gK9"/>
-                            <constraint firstItem="csT-fq-fJ1" firstAttribute="leading" secondItem="fOw-wq-Vwv" secondAttribute="leading" id="LWe-S7-ruw"/>
-                            <constraint firstItem="XIC-aL-2BC" firstAttribute="top" secondItem="fOw-wq-Vwv" secondAttribute="bottom" constant="30" id="Vbz-ds-POn"/>
-                            <constraint firstItem="fOw-wq-Vwv" firstAttribute="top" secondItem="csT-fq-fJ1" secondAttribute="bottom" constant="24" id="kUi-tl-6Ke"/>
-                            <constraint firstAttribute="trailing" secondItem="fOw-wq-Vwv" secondAttribute="trailing" constant="20" id="umQ-Eb-hTe"/>
-                            <constraint firstItem="fOw-wq-Vwv" firstAttribute="leading" secondItem="i4K-NI-3BZ" secondAttribute="leading" constant="20" id="wbX-qp-Noo"/>
-                        </constraints>
-                    </view>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <connections>
-                        <outlet property="collectionView" destination="fOw-wq-Vwv" id="FYN-Si-TMh"/>
-                        <outlet property="playAgainButton" destination="XIC-aL-2BC" id="bfq-C5-dZK"/>
-                        <outlet property="statusLabel" destination="csT-fq-fJ1" id="Uhf-Ej-8YQ"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Fl4-73-ws9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="669.56521739130437" y="886.14130434782612"/>
-        </scene>
-        <!--Main Navigation Controller-->
+        <!--Navigation Controller-->
         <scene sceneID="er5-D3-9mq">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QuC-fL-rNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vJt-m4-NoP" customClass="CNVMainNavigationController" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vJt-m4-NoP" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="VZZ-ds-QIB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>

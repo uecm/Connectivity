@@ -44,7 +44,7 @@
 
 
 @property (strong, nonatomic) NSArray<MCPeerID *> *peers;
-@property (strong, nonatomic) NSMutableArray<MCPeerID *> *acceptedPeers;
+@property (strong, nonatomic) NSMutableArray<MCPeerID *> *connectedPeers;
 @property (copy, nonatomic)   NSString *broadcastingDeviceName;
 
 @property (assign, nonatomic, getter=isAdvertising) BOOL advertising;
