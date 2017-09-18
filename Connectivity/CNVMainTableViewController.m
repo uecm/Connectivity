@@ -12,7 +12,7 @@
 #import "CNVConnectivityManager.h"
 #import "CNVTicTacToeViewController.h"
 
-
+#import <SVProgressHUD.h>
 #import <Colours.h>
 #import <CRToast.h>
 
@@ -21,6 +21,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *advertisingButton;
 @property (weak, nonatomic) IBOutlet UIButton *connectButton;
+@property (weak, nonatomic) IBOutlet UIButton *removeButton;
 
 @property (strong, nonatomic) MCPeerID *selectedPeer;
 @property (strong, nonatomic) NSArray *tableMap;
@@ -85,6 +86,7 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
     self.tableMap = @[settingsSection, connectionSection, interactionSection];
     
     [self setConnectButtonStateConnect];
+    [self setRemoveButtonStateRemove];
     
     [self.tableView reloadData];
 }
@@ -116,12 +118,24 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    CNVConnectivityManager *connectivityManager = [CNVConnectivityManager sharedManager];
     CGFloat height = tableView.rowHeight;
     
     NSIndexPath *connectIndexPath = self.tableMap[1][kConnectCellIdentifier];
     if ([indexPath isEqual:connectIndexPath] && self.selectedPeer == nil) {
         height = 0;
     }
+    
+    NSIndexPath *browseRowIndexPath = self.tableMap[1][kJoinConnectionCellIdentifier];
+    if ([indexPath isEqual:browseRowIndexPath]) {
+        height = connectivityManager.isAdvertising ? 0 : 44;
+    }
+    
+    NSIndexPath *hostRowIndexPath = self.tableMap[1][kHostConnectionCellIdentifier];
+    if ([indexPath isEqual:hostRowIndexPath]) {
+        height = connectivityManager.isBrowsing && connectivityManager.isConnected ? 0 : 44;
+    }
+    
     
     return height;
 }
@@ -143,11 +157,11 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
 - (void)hostList:(CNVHostListTableViewController *)hostList didSelectPeerToConnect:(MCPeerID *)peerID {
     self.selectedPeer = peerID;
     
-    UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kJoinConnectionCellIdentifier]];
-    currentConnectionCell.textLabel.text = peerID ? peerID.displayName : @"Search for others";
-    
+    [self updateJoinConnectionCell];
     [self.tableView reloadData];
 }
+
+
 
 - (void)messageComposer:(CNVMessagePopoverViewController *)composer DidFinishEditingWithMessage:(NSString *)message {
     if (message.length == 0) {
@@ -157,29 +171,40 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
     [manager sendMessage:message toPeer:manager.connectedPeers.firstObject];
 }
 
+
 #pragma mark Browser
 
 - (void)browserLostPeer:(MCPeerID *)peerID {
     if ((uint32_t)peerID.hash == (uint32_t)self.selectedPeer.hash) {
         self.selectedPeer = nil;
-        
-        UITableViewCell *currentConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kJoinConnectionCellIdentifier]];
-        currentConnectionCell.textLabel.text = @"Search for others";
+    
+        [self updateCurrentConnectionCell];
+        [self updateJoinConnectionCell];
+        [[CNVConnectivityManager sharedManager] disconnectFromPeer:peerID];
         
         [self.tableView reloadData];
     }
 }
 
+- (void)browserDidStartConnectingToPeer:(MCPeerID *)peer {
+
+}
+
 - (void)browserDidConnectToPeer:(MCPeerID *)peer {
+    [SVProgressHUD dismiss];
+    
     [self setConnectButtonStateConnected];
     [self updateCurrentConnectionCell];
+    [self setRemoveButtonStateDisconnect];
     
     [self.tableView reloadData];
 }
 
 - (void)browserDidDisconnectFromPeer:(MCPeerID *)peer {
+    self.selectedPeer = nil;
     [self setConnectButtonStateConnect];
     [self updateCurrentConnectionCell];
+    [self setRemoveButtonStateRemove];
     
     [self.tableView reloadData];
 }
@@ -191,14 +216,22 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
     [self setButtonStateFailed];
 }
 
+- (void)advertiserDidStartConnectingToPeer:(MCPeerID *)peer {
+    [self showConnectingHUDView];
+}
+
 - (void)advertiserDidConnectToPeer:(MCPeerID *)peer {
+    [SVProgressHUD dismiss];
+    
     [self updateCurrentConnectionCell];
+    [self setRemoveButtonStateDisconnect];
     
     [self.tableView reloadData];
 }
 
 - (void)advertiserDidDisconnectFromPeer:(MCPeerID *)peer {
     [self updateCurrentConnectionCell];
+    [self setRemoveButtonStateRemove];
     
     [self.tableView reloadData];
 }
@@ -213,6 +246,8 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
 
 
 
+
+
 #pragma mark - Buttons
 
 - (IBAction)connectPressed:(id)sender {
@@ -220,14 +255,36 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
         return;
     }
     
+    [self showConnectingHUDView];
     [[CNVConnectivityManager sharedManager] invitePeerToSession:self.selectedPeer];
+}
+
+
+- (IBAction)removePressed:(id)sender {
+    
+    if ([CNVConnectivityManager sharedManager].isConnected) {
+        [[CNVConnectivityManager sharedManager] disconnectFromPeer:self.selectedPeer];
+        [self setRemoveButtonStateRemove];
+    }
+    else {
+        self.selectedPeer = nil;
+        
+        [self setConnectButtonStateConnect];
+        [self updateJoinConnectionCell];
+        
+        [self.tableView reloadData];
+    }
 }
 
 
 - (IBAction)advertisingButtonPressed:(id)sender {
     if ([CNVConnectivityManager sharedManager].isAdvertising == false) {
         [[CNVConnectivityManager sharedManager] startAdvertising];
+        
         [self setButtonStateAdvertising];
+        self.selectedPeer = nil;
+        
+        [self.tableView reloadData];
     }
     else {
         [self showEndAdvertisingActionSheet];
@@ -271,9 +328,23 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
     [self.connectButton setTitle:@"Connected" forState:UIControlStateNormal];
 }
 
+- (void)setRemoveButtonStateRemove {
+    [self.removeButton setTitleColor:[UIColor tomatoColor] forState:UIControlStateNormal];
+    [self.removeButton setTitle:@"Remove" forState:UIControlStateNormal];
+}
+
+- (void)setRemoveButtonStateDisconnect {
+    [self.removeButton setTitleColor:[UIColor tomatoColor] forState:UIControlStateNormal];
+    [self.removeButton setTitle:@"Disconnect" forState:UIControlStateNormal];
+}
 
 
 #pragma mark - Misc
+
+
+- (void)showConnectingHUDView {
+    [SVProgressHUD showWithStatus:@"Connecting"];
+}
 
 
 - (void)showToastWithMessage:(NSString *)message fromSender:(NSString *)sender {
@@ -309,6 +380,15 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
 }
 
 
+- (void)updateJoinConnectionCell {
+    UITableViewCell *joinConnectionCell = [self.tableView cellForRowAtIndexPath:self.tableMap[1][kJoinConnectionCellIdentifier]];
+    if (!joinConnectionCell) {
+        return;
+    }
+    joinConnectionCell.textLabel.text = self.selectedPeer ? self.selectedPeer.displayName : @"Search for others";
+}
+
+
 
 - (void)showEndAdvertisingActionSheet {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
@@ -319,6 +399,10 @@ static NSString * const kTicTacToeIdentifier             = @"ticTacToeCell";
                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                           [[CNVConnectivityManager sharedManager] endAdvertising];
                                                           [self setButtonStateDefault];
+                                                        
+                                                          
+                                                          [self.tableView reloadData];
+                                                          
                                                           [alertController dismissViewControllerAnimated:true completion:nil];
                                                       }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel"

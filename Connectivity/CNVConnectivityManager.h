@@ -18,9 +18,11 @@
 - (void)advertiserDidReceiveInvintationFromPeer:(MCPeerID *)peerID invintationHandler:(void (^)(BOOL, MCSession *))invitationHandler;
 - (void)advertiserFailedStart;
 
+- (void)browserDidStartConnectingToPeer:(MCPeerID *)peer;
 - (void)browserDidConnectToPeer:(MCPeerID *)peer;
 - (void)browserDidDisconnectFromPeer:(MCPeerID *)peer;
 
+- (void)advertiserDidStartConnectingToPeer:(MCPeerID *)peer;
 - (void)advertiserDidConnectToPeer:(MCPeerID *)peer;
 - (void)advertiserDidDisconnectFromPeer:(MCPeerID *)peer;
 
@@ -63,6 +65,7 @@
 - (void)endAdvertising;
 
 - (void)invitePeerToSession:(MCPeerID *)peer;
+- (void)disconnectFromPeer:(MCPeerID *)peer;
 
 - (BOOL)sendMessage:(NSString *)message toPeer:(MCPeerID *)peer;
 - (BOOL)sendDictionaty:(NSDictionary *)dictionary toPeer:(MCPeerID *)peer;

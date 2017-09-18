@@ -33,7 +33,7 @@
 @property (strong, nonatomic) NSDictionary *opponentPlayerPreferences;
 
 @property (strong, nonatomic) MCPeerID *opponent;
-@property (strong, nonatomic) NSDictionary *gameStatistics;
+@property (strong, nonatomic) NSMutableDictionary *gameStatistics;
 @property (assign, nonatomic, getter=isGameOwner) BOOL gameOwner;
 
 

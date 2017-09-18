@@ -23,34 +23,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select your fighter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ3-xY-UgE">
-                                <rect key="frame" x="20" y="81" width="239" height="31.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose your fighter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ3-xY-UgE">
+                                <rect key="frame" x="20" y="81" width="256" height="32"/>
                                 <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="26"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lCE-7X-uAF">
-                                <rect key="frame" x="36" y="124.5" width="303" height="100"/>
+                                <rect key="frame" x="16" y="124.5" width="343" height="100"/>
                                 <color key="backgroundColor" red="0.76573038101196289" green="0.92509526014328003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="EEg-Ej-Qbm"/>
                                 </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Wle-1T-lZV">
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="5" id="Wle-1T-lZV">
                                     <size key="itemSize" width="112" height="97"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <inset key="sectionInset" minX="5" minY="5" maxX="5" maxY="5"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="fighterCell" id="jnP-Qx-ASg">
-                                        <rect key="frame" x="0.0" y="2.5" width="95" height="95"/>
+                                        <rect key="frame" x="5" y="5" width="95" height="90"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="95" height="95"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="95" height="90"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🌚" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="k3N-Dp-IlG">
-                                                    <rect key="frame" x="8" y="8" width="79" height="79"/>
+                                                    <rect key="frame" x="8" y="8" width="79" height="74"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="70"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -64,7 +64,7 @@
                                             <constraint firstAttribute="trailingMargin" secondItem="k3N-Dp-IlG" secondAttribute="trailing" id="huV-rV-qad"/>
                                             <constraint firstItem="k3N-Dp-IlG" firstAttribute="top" secondItem="jnP-Qx-ASg" secondAttribute="topMargin" id="zwA-cT-KR1"/>
                                         </constraints>
-                                        <size key="customSize" width="95" height="95"/>
+                                        <size key="customSize" width="95" height="90"/>
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
@@ -111,7 +111,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="lCE-7X-uAF" secondAttribute="trailing" constant="20" id="Fvt-kn-37O"/>
                             <constraint firstItem="HQ3-xY-UgE" firstAttribute="top" secondItem="A1K-xR-sk3" secondAttribute="bottom" constant="17" id="Prk-7O-HAe"/>
                             <constraint firstItem="TI3-r5-q35" firstAttribute="top" secondItem="rJZ-HK-iCl" secondAttribute="bottom" constant="12" id="QZa-KU-cjl"/>
                             <constraint firstItem="rJZ-HK-iCl" firstAttribute="centerX" secondItem="HrG-8j-IX7" secondAttribute="centerX" id="RDe-PS-l5f"/>
@@ -119,10 +118,11 @@
                             <constraint firstItem="HQ3-xY-UgE" firstAttribute="leading" secondItem="HrG-8j-IX7" secondAttribute="leadingMargin" constant="4" id="bLl-Tq-1IX"/>
                             <constraint firstItem="G4O-q2-gXA" firstAttribute="top" secondItem="TI3-r5-q35" secondAttribute="bottom" constant="120" id="dYw-8g-iDE"/>
                             <constraint firstItem="i5E-On-vCc" firstAttribute="centerX" secondItem="HrG-8j-IX7" secondAttribute="centerX" id="iwi-8Z-pgO"/>
-                            <constraint firstItem="lCE-7X-uAF" firstAttribute="leading" secondItem="HrG-8j-IX7" secondAttribute="leadingMargin" constant="20" id="uFv-rI-Egy"/>
                             <constraint firstItem="lCE-7X-uAF" firstAttribute="centerX" secondItem="HrG-8j-IX7" secondAttribute="centerX" id="uyx-9q-FLW"/>
+                            <constraint firstItem="lCE-7X-uAF" firstAttribute="leading" secondItem="HrG-8j-IX7" secondAttribute="leadingMargin" id="vGs-q4-WNa"/>
                             <constraint firstItem="i5E-On-vCc" firstAttribute="centerY" secondItem="HrG-8j-IX7" secondAttribute="centerY" id="vlk-VY-ujp"/>
                             <constraint firstItem="lCE-7X-uAF" firstAttribute="top" secondItem="HQ3-xY-UgE" secondAttribute="bottom" constant="12" id="xYt-aq-gOS"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="lCE-7X-uAF" secondAttribute="trailing" id="xhK-R9-6Ej"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="ot4-gT-qXd"/>
@@ -252,6 +252,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="collectionView" destination="Tov-op-mEQ" id="c7T-Uo-WaS"/>
+                        <outlet property="gameStatisticsLabel" destination="Eht-bk-x1o" id="6HA-MA-Shb"/>
                         <outlet property="playAgainButton" destination="Mmg-bj-t2T" id="Paf-rY-GfC"/>
                         <outlet property="statusLabel" destination="kw4-oB-ctI" id="6Kx-2d-cD0"/>
                     </connections>

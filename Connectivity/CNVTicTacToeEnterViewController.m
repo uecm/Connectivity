@@ -8,8 +8,10 @@
 
 #import "CNVTicTacToeEnterViewController.h"
 #import "CNVTicTacToeViewController.h"
+#import <Colours.h>
 
-@interface CNVTicTacToeEnterViewController () <UICollectionViewDelegate, UICollectionViewDataSource, CNVTicTacToeGameSessionDelegate>
+
+@interface CNVTicTacToeEnterViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CNVTicTacToeGameSessionDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UILabel *selectedFighterLabel;
@@ -30,15 +32,9 @@ static NSString * const kFighterCellIdentifier = @"fighterCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    self.figters = @[@"😈", @"👹", @"👺", @"💩", @"👻", @"💀", @"👽", @"👾", @"🤖", @"🌚", @"🌝"];
-    [self.collectionView reloadData];
-    NSInteger randomIndex = arc4random_uniform((uint32_t)self.figters.count);
-    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:randomIndex inSection:0] animated:false scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
-    self.selectedFighterLabel.text = self.figters[randomIndex];
+    [self initializeView];
     
     self.sessionInteractor = [[CNVTicTacToeSessionInteractor alloc] init];
-    self.joinGameButton.alpha = 0;
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -47,6 +43,15 @@ static NSString * const kFighterCellIdentifier = @"fighterCell";
 
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.sessionInteractor.opponentPlayerPreferences == nil) {
+        self.joinGameButton.alpha = 0;
+    }
+}
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -54,6 +59,15 @@ static NSString * const kFighterCellIdentifier = @"fighterCell";
 
 
 #pragma mark - Collection View Delegate / Data Source
+
+-(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)collectionViewLayout;
+    CGFloat width = (CGRectGetWidth(collectionView.frame) - layout.minimumInteritemSpacing * 2) / 2.5f - layout.sectionInset.left - layout.sectionInset.right;
+    CGFloat height = CGRectGetHeight(collectionView.frame) - layout.sectionInset.top - layout.sectionInset.bottom;
+    
+    return CGSizeMake(width, height);
+}
+
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -101,12 +115,18 @@ static NSString * const kFighterCellIdentifier = @"fighterCell";
 
 #pragma mark - Navigation
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-   
-//    if ([self.selectedFighterLabel.text isEqualToString:@""]) {
-//        self.selectedFighterLabel.text = self.figters[arc4random_uniform((uint32_t)self.figters.count)];
-//    }
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
     
+    if ([identifier isEqualToString:@"joinGameSegue"]) {
+        
+    }
+    
+    
+    
+    return true;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"joinGameSegue"]) {
         [self.sessionInteractor sendJoinGameMessageWithParameters:@{@"fighter" : self.selectedFighterLabel.text}];
         
@@ -119,6 +139,38 @@ static NSString * const kFighterCellIdentifier = @"fighterCell";
         
         CNVTicTacToeViewController *gameViewController = segue.destinationViewController;
         gameViewController.sessionInteractor = self.sessionInteractor;
+    }
+}
+
+
+
+#pragma mark - Misc
+
+
+- (void)initializeView {
+    CALayer *collectionLayer = self.collectionView.layer;
+    collectionLayer.cornerRadius = 8;
+    collectionLayer.borderWidth = 4;
+    collectionLayer.borderColor = [UIColor indigoColor].CGColor;
+
+    self.figters = @[@"😈", @"👹", @"👺", @"💩", @"👻", @"💀", @"👽", @"👾", @"🤖", @"🌚", @"🌝"];
+    [self.collectionView reloadData];
+    
+    NSInteger randomIndex = arc4random_uniform((uint32_t)self.figters.count);
+    [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:randomIndex inSection:0]
+                                      animated:false
+                                scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+    
+    self.selectedFighterLabel.text = self.figters[randomIndex];
+
+    self.joinGameButton.alpha = 0;
+    
+    for (UIButton *button in @[self.joinGameButton, self.createGameButton]) {
+        button.layer.cornerRadius = 8;
+        button.layer.borderWidth = 0;
+        button.layer.borderColor = [UIColor indigoColor].CGColor;
+        button.backgroundColor = [UIColor indigoColor];
+        [button setTitleColor:[UIColor ghostWhiteColor] forState:UIControlStateNormal];
     }
 }
 

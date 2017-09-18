@@ -12,10 +12,17 @@
 
 #import <CRToast.h>
 #import <Colours.h>
+#import <SVProgressHUD.h>
 
 typedef NS_ENUM(NSInteger, GameMessageType) {
     GameMessageTypeEndTurn = 0,
     GameMessageTypeNewGame
+};
+
+typedef NS_ENUM(NSInteger, GameResultType) {
+    GameResultTypeWin = 0,
+    GameResultTypeLose,
+    GameResultTypeDraw
 };
 
 
@@ -24,6 +31,7 @@ typedef NS_ENUM(NSInteger, GameMessageType) {
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *playAgainButton;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+@property (weak, nonatomic) IBOutlet UILabel *gameStatisticsLabel;
 @property (assign, nonatomic) TicTacToePlayerType playerType;
 
 
@@ -46,7 +54,6 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     [self initializeView];
     self.sessionInteractor.delegate = self;
     
-    
     if (self.sessionInteractor.isGameOwner) {
         self.playerType = TicTacToePlayerTypeCross;
         myTurn = true;
@@ -59,12 +66,15 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
         self.statusLabel.text = statusLabelText;
     }
     gameOver = false;
+    
+    [self showWaitingForOpponentHUD];
 }
-
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.sessionInteractor sendLeftGameMessage];
+    if (self.sessionInteractor.opponentPlayerPreferences) {
+        [self.sessionInteractor sendLeftGameMessage];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -140,6 +150,11 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
 }
 
 
+- (void)peer:(MCPeerID *)peerID didEnterGameSessionWithParameters:(NSDictionary *)parameters {
+    if ([SVProgressHUD isVisible]) {
+        [SVProgressHUD dismiss];
+    }
+}
 
 - (void)peerDidSendPlayAgainMessage:(MCPeerID *)peer {
     [self prepareForNewGame];
@@ -160,6 +175,13 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     [self checkForGameEnd];
 }
 
+
+- (void)peerDidLeftGameSession:(MCPeerID *)peerID {
+    [CRToastManager showNotificationWithMessage:@"Opponent has left the game💩" completionBlock:^{
+        [self.navigationController popViewControllerAnimated:true];
+    }];
+}
+
 #pragma mark - Buttons
 
 
@@ -169,7 +191,7 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
 }
 
 
- 
+
 #pragma mark - Misc
 
 
@@ -262,7 +284,9 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
     }
 }
 
+
 - (void)showGameDraw {
+    [self addEntryToGameStatisticsWithResult:GameResultTypeDraw];
     [CRToastManager showNotificationWithMessage:@"Draw!" completionBlock:^{
         [UIView animateWithDuration:0.3 animations:^{
             self.playAgainButton.alpha = 1;
@@ -271,15 +295,16 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
 }
 
 
-
 - (void)showGameOverWithWonPlayerType:(TicTacToePlayerType)wonPlayerType {
     
     NSString *textString;
     if (wonPlayerType == self.playerType) {
         textString = @"You Won!";
+        [self addEntryToGameStatisticsWithResult:GameResultTypeWin];
     }
     else {
         textString = [NSString stringWithFormat:@"%@ Won!",self.sessionInteractor.opponent.displayName];
+        [self addEntryToGameStatisticsWithResult:GameResultTypeLose];
     }
     
     [CRToastManager showNotificationWithMessage:textString completionBlock:^{
@@ -287,6 +312,43 @@ static NSString * const ticTacToeCellIdentifier = @"ticTacToeCell";
             self.playAgainButton.alpha = 1;
         }];
     }];
+}
+
+
+- (void)addEntryToGameStatisticsWithResult:(GameResultType)gameResult {
+    if (self.sessionInteractor.gameStatistics == nil) {
+        self.sessionInteractor.gameStatistics = @{}.mutableCopy;
+    }
+    NSMutableDictionary *gameStats = self.sessionInteractor.gameStatistics;
+    NSNumber *currentValue = [gameStats objectForKey:@(gameResult)];
+    
+    if (!currentValue) {
+        currentValue = [NSNumber numberWithInteger:0];
+    }
+    
+    currentValue = [NSNumber numberWithInteger:currentValue.integerValue + 1];
+    
+    [gameStats setObject:currentValue forKey:@(gameResult)];
+    [self updateGameStatisticsLabel];
+}
+
+- (void)updateGameStatisticsLabel {
+    NSDictionary *currentStats = self.sessionInteractor.gameStatistics.copy;
+    
+    int wins = [[currentStats objectForKey:@(GameResultTypeWin)] intValue];
+    int loses = [[currentStats objectForKey:@(GameResultTypeLose)] intValue];
+    int draws = [[currentStats objectForKey:@(GameResultTypeDraw)] intValue];
+
+    self.gameStatisticsLabel.text = [NSString stringWithFormat:@"Wins:%d Loses:%d Draws:%d",wins, loses, draws];
+}
+
+
+- (void)showWaitingForOpponentHUD {
+    
+    if (!self.sessionInteractor.opponentPlayerPreferences) {
+        [SVProgressHUD showWithStatus:@"Waiting for Opponent"];
+    }
+    
 }
 
 @end

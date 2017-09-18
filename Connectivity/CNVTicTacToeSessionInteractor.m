@@ -92,10 +92,14 @@ static NSString * const kTicTacToeGameIdentifier = @"ticTacToeGameIdentifier";
 }
 
 - (void)sendLeftGameMessage {
+
     NSDictionary *leaveParameters = @{
                                       @"destination"       : kTicTacToeGameIdentifier,
                                       @"message"           : @(GameSessionMessageLeave)
                                       };
+    
+    self.opponentPlayerPreferences = nil;
+    self.gameStatistics = nil;
     [self.connectivityManager sendDictionaty:leaveParameters toPeer:self.opponent];
 }
 
@@ -137,6 +141,10 @@ static NSString * const kTicTacToeGameIdentifier = @"ticTacToeGameIdentifier";
             break;
             
         case GameSessionMessageLeave:
+            
+            self.gameStatistics = nil;
+            self.opponentPlayerPreferences = nil;
+            
             if ([self.delegate respondsToSelector:@selector(peerDidLeftGameSession:)]) {
                 [self.delegate peerDidLeftGameSession:peer];
             }

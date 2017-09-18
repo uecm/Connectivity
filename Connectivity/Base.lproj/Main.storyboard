@@ -119,10 +119,10 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="E2h-Bj-SlU" firstAttribute="leading" secondItem="TfZ-le-Ixa" secondAttribute="leadingMargin" constant="7" id="7Z7-t6-m73"/>
-                                                <constraint firstAttribute="bottom" secondItem="gIR-qb-wce" secondAttribute="bottom" constant="6" id="NvD-wh-jgM"/>
+                                                <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="gIR-qb-wce" secondAttribute="bottom" constant="6" id="NvD-wh-jgM"/>
                                                 <constraint firstAttribute="trailing" secondItem="gIR-qb-wce" secondAttribute="trailing" constant="15" id="Tuq-h4-Nvt"/>
                                                 <constraint firstItem="E2h-Bj-SlU" firstAttribute="centerY" secondItem="TfZ-le-Ixa" secondAttribute="centerY" id="YvE-Wf-WZg"/>
-                                                <constraint firstItem="gIR-qb-wce" firstAttribute="top" secondItem="TfZ-le-Ixa" secondAttribute="top" constant="6" id="a66-IS-Cme"/>
+                                                <constraint firstItem="gIR-qb-wce" firstAttribute="top" relation="lessThanOrEqual" secondItem="TfZ-le-Ixa" secondAttribute="top" constant="6" id="a66-IS-Cme"/>
                                                 <constraint firstItem="gIR-qb-wce" firstAttribute="centerY" secondItem="TfZ-le-Ixa" secondAttribute="centerY" id="rIn-cZ-XAJ"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -155,17 +155,31 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9LU-Ti-bbl">
-                                                    <rect key="frame" x="176" y="6" width="62" height="30"/>
+                                                    <rect key="frame" x="219" y="6" width="171" height="30"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                     <state key="normal" title="Connect"/>
                                                     <connections>
                                                         <action selector="connectPressed:" destination="lz5-ix-vMr" eventType="touchUpInside" id="EwO-EL-qTy"/>
                                                     </connections>
                                                 </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="29T-Lx-Btp">
+                                                    <rect key="frame" x="24" y="6" width="171" height="30"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <state key="normal" title="Remove">
+                                                        <color key="titleColor" red="0.88936418289999997" green="0.27273702620000001" blue="0.32803115249999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="removePressed:" destination="lz5-ix-vMr" eventType="touchUpInside" id="41v-lg-Xt9"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="9LU-Ti-bbl" firstAttribute="centerX" secondItem="B8v-aA-lUh" secondAttribute="centerX" id="Adm-3s-ggZ"/>
+                                                <constraint firstItem="29T-Lx-Btp" firstAttribute="width" secondItem="9LU-Ti-bbl" secondAttribute="width" id="AfK-oh-6oQ"/>
+                                                <constraint firstItem="9LU-Ti-bbl" firstAttribute="leading" secondItem="29T-Lx-Btp" secondAttribute="trailing" constant="24" id="NiK-wc-yCt"/>
                                                 <constraint firstItem="9LU-Ti-bbl" firstAttribute="centerY" secondItem="B8v-aA-lUh" secondAttribute="centerY" id="ksC-AR-b3i"/>
+                                                <constraint firstItem="29T-Lx-Btp" firstAttribute="centerY" secondItem="B8v-aA-lUh" secondAttribute="centerY" id="mmt-mx-E8f"/>
+                                                <constraint firstAttribute="trailing" secondItem="9LU-Ti-bbl" secondAttribute="trailing" constant="24" id="qPN-dV-hnc"/>
+                                                <constraint firstItem="29T-Lx-Btp" firstAttribute="leading" secondItem="B8v-aA-lUh" secondAttribute="leading" constant="24" id="xsV-mk-ghu"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -224,6 +238,7 @@
                     <connections>
                         <outlet property="advertisingButton" destination="gIR-qb-wce" id="4Qi-qW-6V1"/>
                         <outlet property="connectButton" destination="9LU-Ti-bbl" id="7jx-Pe-TWi"/>
+                        <outlet property="removeButton" destination="29T-Lx-Btp" id="eE2-PH-z7E"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sAX-Nq-Bcd" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -323,13 +338,13 @@
         <scene sceneID="ZSK-Pu-8cI">
             <objects>
                 <tableViewController title="Searching" id="6SK-rc-Jx3" customClass="CNVHostListTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="6g8-hD-scf">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="6g8-hD-scf">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="peerCell" textLabel="DVx-mi-6hg" style="IBUITableViewCellStyleDefault" id="B9Y-VO-ycz">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="55" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="B9Y-VO-ycz" id="DiD-hl-jUO">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
@@ -417,7 +432,6 @@
         <!--Navigation Controller-->
         <scene sceneID="er5-D3-9mq">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="QuC-fL-rNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="vJt-m4-NoP" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="VZZ-ds-QIB">
@@ -429,6 +443,7 @@
                         <segue destination="lz5-ix-vMr" kind="relationship" relationship="rootViewController" id="lZy-UP-8ke"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QuC-fL-rNe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-759.20000000000005" y="127.28635682158921"/>
         </scene>

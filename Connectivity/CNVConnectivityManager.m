@@ -118,6 +118,7 @@ static NSString * const kServiceType = @"CNV-game-srvc";
 
 - (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID {
     [self removePeer:peerID];
+    
     if ([self.delegate respondsToSelector:@selector(browserLostPeer:)]) {
         [self.delegate browserLostPeer:peerID];
     }
@@ -158,6 +159,12 @@ static NSString * const kServiceType = @"CNV-game-srvc";
 - (void)endAdvertising {
     [_advertiserAssistant stop];
     self.advertising = false;
+    
+    if (self.connectedPeers.count) {
+        [self.connectedPeers removeAllObjects];
+        self.connected = false;
+    }
+    
 }
 
 - (void)advertiserAssistantWillPresentInvitation:(MCAdvertiserAssistant *)advertiserAssistant {
@@ -199,8 +206,18 @@ static NSString * const kServiceType = @"CNV-game-srvc";
     [self.browser invitePeer:peer toSession:self.session withContext:nil timeout:30];
 }
 
+- (void)disconnectFromPeer:(MCPeerID *)peer {
+    [self.session disconnect];
+    [self.connectedPeers removeAllObjects];
+    self.connected = false;
+}
+
 
 - (BOOL)sendMessage:(NSString *)message toPeer:(MCPeerID *)peer {
+    
+    if (!peer) {
+        return false;
+    }
     
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:message];
     NSError *error = nil;
@@ -214,6 +231,11 @@ static NSString * const kServiceType = @"CNV-game-srvc";
 
 
 - (BOOL)sendDictionaty:(NSDictionary *)dictionary toPeer:(MCPeerID *)peer {
+    
+    if (!peer) {
+        return false;
+    }
+    
     NSData *dictData = [NSKeyedArchiver archivedDataWithRootObject:dictionary];
     NSError *error = nil;
     
@@ -243,6 +265,14 @@ static NSString * const kServiceType = @"CNV-game-srvc";
                 break;
                 
             case MCSessionStateConnecting:
+                
+                if (self.isBrowsing && [self.delegate respondsToSelector:@selector(browserDidStartConnectingToPeer:)]) {
+                    [self.delegate browserDidStartConnectingToPeer:peerID];
+                }
+                else if (self.isAdvertising && [self.delegate respondsToSelector:@selector(advertiserDidStartConnectingToPeer:)]) {
+                    [self.delegate advertiserDidStartConnectingToPeer:peerID];
+                }
+                
                 break;
                 
                 
@@ -260,7 +290,6 @@ static NSString * const kServiceType = @"CNV-game-srvc";
                 break;
         }
     });
-    
 }
 
 // Received data from remote peer.

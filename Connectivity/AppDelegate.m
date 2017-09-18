@@ -13,6 +13,7 @@
 
 #import <CRToast.h>
 #import <Colours.h>
+#import <SVProgressHUD.h>
 
 @interface AppDelegate ()
 
@@ -35,6 +36,7 @@
                               kCRToastNotificationTypeKey : @(CRToastTypeNavigationBar)
                               };
     [CRToastManager setDefaultOptions:options];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
     
     
     return YES;
